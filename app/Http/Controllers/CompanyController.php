@@ -13,14 +13,16 @@ class CompanyController extends Controller
         $company = Company::find(1);
         return view('pages.company.show', compact('company'));
     }
+
     //edit
     public function edit($id)
     {
+        $company = Company::find($id);
         return view('pages.company.edit', compact('company'));
     }
 
     //update
-    public function update(Request $request, $id)
+    public function update(Request $request, Company $company)
     {
         $request->validate([
             'name' => 'required',
@@ -33,7 +35,6 @@ class CompanyController extends Controller
             'time_out' => 'required',
         ]);
 
-        $company = Company::find(1);
         $company->update([
             'name' => $request->name,
             'email' => $request->email,
@@ -44,6 +45,7 @@ class CompanyController extends Controller
             'time_in' => $request->time_in,
             'time_out' => $request->time_out,
         ]);
-        return redirect()->route('company.show')->with('success', 'Company updated successfully');
+
+        return redirect()->route('companies.show', 1)->with('success', 'Company updated successfully');
     }
 }
