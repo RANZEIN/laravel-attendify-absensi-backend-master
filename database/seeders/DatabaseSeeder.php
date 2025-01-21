@@ -21,5 +21,20 @@ class DatabaseSeeder extends Seeder
             'email' => 'ranzdhika@gmail.com',
             'password' => Hash::make('@WHF487pp31'),
         ]);
+
+        // data dummy for company
+        \App\Models\Company::create(
+            [
+                'name' => 'PT.Mencari Cinta',
+                'email' => 'ranzdhika@gmail.com',
+                'address' => 'Jl.Manisi atas Gg. Reformasi No.006',
+                'latitude' => '37.7749',
+                'longitude' => '-122.4194',
+                'radius_km' => '0.5',
+                'time_in' => '08:00',
+                'time_out' => '17:00',
+            ]
+        );
+
     }
 }
