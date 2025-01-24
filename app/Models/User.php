@@ -26,7 +26,7 @@ class User extends Authenticatable
         'role',
         'position',
         'department',
-        'face_embadding',
+        'face_embedding',
         'image_url',
     ];
 

@@ -16,10 +16,10 @@ return new class extends Migration
             $table->string('position')->nullable();
             //department
             $table->string('department')->nullable();
-           //face_embadding
-           $table->string('face embadding')->nullable();
-           //image_url
-           $table->string('image_url')->nullable();
+            //face_embedding
+            $table->text('face_embedding')->nullable();
+            //image_url
+            $table->string('image_url')->nullable();
         });
     }
 
@@ -32,7 +32,7 @@ return new class extends Migration
             //
             $table->dropColumn('position');
             $table->dropColumn('department');
-            $table->dropColumn('face_embadding');
+            $table->dropColumn('face_embedding');
             $table->dropColumn('image_url');
         });
     }
