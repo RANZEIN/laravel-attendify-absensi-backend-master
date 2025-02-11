@@ -84,6 +84,33 @@
                                                 value="{{ $company->time_out }}">
                                         </div>
                                     </div>
+                                    <div class="row">
+
+                                        <div class="form-group col-md-6 col-12">
+                                            <label>Is Attendance Type</label>
+                                            {{-- <select name="attendance_type" class="form-control" style="height: 40px;">
+                                                <option value="Face" {{$copany->attendance_type == 'Face' ? ''}}>
+                                                    Face</option>
+                                                <option value="QR">
+                                                    QR</option>
+                                                <option value="None">
+                                                    None</option>
+                                            </select> --}}
+                                            <select name="attendance_type" class="form-control" style="height: 40px;">
+                                                <option value="Face"
+                                                    {{ $company->attendance_type == 'Face' ? 'selected' : '' }}>
+                                                    Face</option>
+                                                <option value="QR"
+                                                    {{ $company->attendance_type == 'QR' ? 'selected' : '' }}>
+                                                    QR</option>
+                                                <option value="None"
+                                                    {{ $company->attendance_type == 'None' ? 'selected' : '' }}>
+                                                    None</option>
+                                            </select>
+                                        </div>
+
+
+                                    </div>
                                 </div>
                                 <div class="card-footer text-right">
                                     <button type="submit" class="btn btn-primary">Simpan Perubahan</button>

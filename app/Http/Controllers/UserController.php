@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -10,18 +9,20 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     //index
-    public function index() {
-
+    public function index()
+    {
+        //search by name, pagination 10
         $users = User::where('name', 'like', '%' . request('name') . '%')
-        ->orderBy('id', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(10);
         return view('pages.users.index', compact('users'));
     }
 
     //create
-    public function create() {
+    public function create()
+    {
         return view('pages.users.create');
-        }
+    }
 
     //store
     public function store(Request $request)
@@ -74,7 +75,8 @@ class UserController extends Controller
                 'password' => Hash::make($request->password),
             ]);
         }
-        return redirect()->route('users.index')->with('success', 'User created successfully');
+
+        return redirect()->route('users.index')->with('success', 'User updated successfully');
     }
 
     //destroy

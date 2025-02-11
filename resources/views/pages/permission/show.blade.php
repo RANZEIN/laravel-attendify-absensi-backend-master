@@ -65,7 +65,7 @@
                                         @if ($permission->image)
                                             <!-- Jika image tersedia, tampilkan gambar -->
                                             <div>
-                                                 <img src="{{ asset('storage/' . $permission->image) }}"
+                                                <img src="{{ asset('storage/permissions/' . $permission->image) }}"
                                                     alt="Bukti Dukung" class="img-thumbnail mb-3" style="max-width: 200px;">
                                             </div>
                                         @else

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Symfony\Contracts\Service\Attribute\Required;
 use App\Models\Attendance;
 
 class AttendanceController extends Controller
@@ -18,17 +17,17 @@ class AttendanceController extends Controller
             'longitude' => 'required',
         ]);
 
-       // save new atendance
-      $attendance = new Attendance;
-      $attendance->user_id = $request->user()->id;
-      $attendance->date = date('Y-m-d');
-      $attendance->time_in = date('H:i:s');
-      $attendance->latlong_in = $request->latitude . ',' . $request->longitude;
-      $attendance->save();
+        //save new attendance
+        $attendance = new Attendance;
+        $attendance->user_id = $request->user()->id;
+        $attendance->date = date('Y-m-d');
+        $attendance->time_in = date('H:i:s');
+        $attendance->latlon_in = $request->latitude . ',' . $request->longitude;
+        $attendance->save();
 
         return response([
-            'message' => 'Check-in success',
-            'attendance' => $attendance,
+            'message' => 'Checkin success',
+            'attendance' => $attendance
         ], 200);
     }
 
@@ -53,7 +52,7 @@ class AttendanceController extends Controller
 
         //save checkout
         $attendance->time_out = date('H:i:s');
-        $attendance->latlong_out = $request->latitude . ',' . $request->longitude;
+        $attendance->latlon_out = $request->latitude . ',' . $request->longitude;
         $attendance->save();
 
         return response([
@@ -78,5 +77,24 @@ class AttendanceController extends Controller
         ], 200);
     }
 
+    //index
+    public function index(Request $request)
+    {
+        $date = $request->input('date');
 
+        $currentUser = $request->user();
+
+        $query = Attendance::where('user_id', $currentUser->id);
+
+        if ($date) {
+            $query->where('date', $date);
+        }
+
+        $attendance = $query->get();
+
+        return response([
+            'message' => 'Success',
+            'data' => $attendance
+        ], 200);
+    }
 }

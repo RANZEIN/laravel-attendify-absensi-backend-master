@@ -22,14 +22,27 @@ Route::post('/checkin', [App\Http\Controllers\Api\AttendanceController::class, '
 //checkout
 Route::post('/checkout', [App\Http\Controllers\Api\AttendanceController::class, 'checkout'])->middleware('auth:sanctum');
 
-//check is checkedin
-Route::post('/is-checkedin', [App\Http\Controllers\Api\AttendanceController::class, 'isCheckedin'])->middleware('auth:sanctum');
+//is checkin
+Route::get('/is-checkin', [App\Http\Controllers\Api\AttendanceController::class, 'isCheckedin'])->middleware('auth:sanctum');
 
 //update profile
 Route::post('/update-profile', [App\Http\Controllers\Api\AuthController::class, 'updateProfile'])->middleware('auth:sanctum');
 
-//create permissions
-Route::apiResource('api-permissions', App\Http\Controllers\Api\PermissionController::class)->middleware('auth:sanctum');
+//create permission
+Route::apiResource('/api-permissions', App\Http\Controllers\Api\PermissionController::class)->middleware('auth:sanctum');
 
 //notes
-Route::apiResource('api-notes', App\Http\Controllers\Api\NoteController::class)->middleware('auth:sanctum');
+Route::apiResource('/api-notes', App\Http\Controllers\Api\NoteController::class)->middleware('auth:sanctum');
+
+//update fcm token
+Route::post('/update-fcm-token', [App\Http\Controllers\Api\AuthController::class, 'updateFcmToken'])->middleware('auth:sanctum');
+
+//get attendance
+Route::get('/api-attendances', [App\Http\Controllers\Api\AttendanceController::class, 'index'])->middleware('auth:sanctum');
+
+Route::get('/api-user/{id}', [App\Http\Controllers\Api\UserController::class, 'getUserId'])->middleware('auth:sanctum');
+
+//update user
+Route::post('/api-user/edit', [App\Http\Controllers\Api\UserController::class, 'updateProfile'])->middleware('auth:sanctum');
+
+Route::post('/check-qr', [App\Http\Controllers\Api\QrAbsenController::class, 'checkQR'])->middleware('auth:sanctum');

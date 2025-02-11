@@ -1,10 +1,10 @@
 <div class="main-sidebar sidebar-style-2">
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
-            <a href="index.html">Absensi</a>
+            <a href="index.html">ATTENDIFY</a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
-            <a href="index.html">St</a>
+            <a href="index.html">At</a>
         </div>
         <ul class="sidebar-menu">
 
@@ -30,6 +30,7 @@
                     <span>Attendances</span>
                 </a>
             </li>
+
             <li class="nav-item">
                 <a href="{{ route('permissions.index') }}" class="nav-link">
                     <i class="fas fa-columns"></i>
@@ -37,7 +38,12 @@
                 </a>
             </li>
 
-
+            <li class="nav-item">
+                <a href="{{ route('qr_absens.index') }}" class="nav-link">
+                    <i class="fas fa-columns"></i>
+                    <span>QR Absen</span>
+                </a>
+            </li>
 
     </aside>
 </div>

@@ -21,8 +21,8 @@ class AttendanceFactory extends Factory
             'date' => $this->faker->date(),
             'time_in' => $this->faker->time(),
             'time_out' => $this->faker->time(),
-            'latlong_in' => $this->faker->latitude().','.$this->faker->longitude(),
-            'latlong_out' => $this->faker->latitude().','.$this->faker->longitude(),
+            'latlon_in' => $this->faker->latitude() . ',' . $this->faker->longitude(),
+            'latlon_out' => $this->faker->latitude() . ',' . $this->faker->longitude(),
         ];
     }
 }

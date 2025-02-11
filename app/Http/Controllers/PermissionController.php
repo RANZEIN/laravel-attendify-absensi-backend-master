@@ -7,6 +7,9 @@ use App\Models\Permission;
 use App\Models\User;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
+use Resend\Laravel\Facades\Resend;
+use App\Mail\ApprovedPermissionConfirmation;
+use Carbon\Carbon;
 
 
 
@@ -43,9 +46,38 @@ class PermissionController extends Controller
     {
         $permission = Permission::find($id);
         $permission->is_approved = $request->is_approved;
-        // $str = $request->is_approved == 1 ? 'Disetujui' : 'Ditolak';
+        $str = $request->is_approved == 1 ? 'Disetujui' : 'Ditolak';
         $permission->save();
+        $user = User::find($permission->user_id);
+        $permission_date = $permission->date_permission;
+        $date = Carbon::parse($permission_date)->translatedFormat('d F Y');
+        $reason = $permission->reason;
         // $this->sendNotificationToUser($permission->user_id, 'Status Izin anda adalah ' . $str);
+        if ($request->is_approved == 1) {
+            Resend::emails()->send([
+                'from' =>  'onboarding@resend.dev',
+                'to' => $user->email,
+                'subject' => 'Approved Permission - ' . $user->name,
+                'html' => (new ApprovedPermissionConfirmation($user, $date, $reason))->render(),
+            ]);
+        }
         return redirect()->route('permissions.index')->with('success', 'Permission updated successfully');
+    }
+
+    public function sendNotificationToUser($userId, $message)
+    {
+        // Dapatkan FCM token user dari tabel 'users'
+
+        $user = User::find($userId);
+        $token = $user->fcm_token;
+
+        // Kirim notifikasi ke perangkat Android
+        $messaging = app('firebase.messaging');
+        $notification = Notification::create('Status Izin', $message);
+
+        $message = CloudMessage::withTarget('token', $token)
+            ->withNotification($notification);
+
+        $messaging->send($message);
     }
 }

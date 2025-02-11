@@ -67,7 +67,7 @@
                                             <label>Bukti Dukung</label>
                                             <p>
                                                 @if ($permission->image)
-                                                     <img src="{{ asset('storage/' . $permission->image) }}"
+                                                    <img src="{{ asset('storage/permission/' . $permission->image) }}"
                                                         alt="Bukti Dukung" style="max-width: 100%; height: auto;">
                                                 @else
                                                     Tidak ada bukti dukung
@@ -78,9 +78,9 @@
                                             <label>Is Approval</label>
                                             <select name="is_approved" class="form-control" style="height: 40px;">
                                                 <option value="1" {{ $permission->is_approval ? 'selected' : '' }}>
-                                                    Approved</option>
+                                                    Disetujui</option>
                                                 <option value="0" {{ !$permission->is_approval ? 'selected' : '' }}>
-                                                    Not Approved</option>
+                                                    Tidak Disetujui</option>
                                             </select>
                                         </div>
                                     </div>

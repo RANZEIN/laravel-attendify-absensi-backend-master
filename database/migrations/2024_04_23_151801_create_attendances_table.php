@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-             //user_id (foreign key to user)
+            //user_id (foreign key to users)
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             //date
             $table->date('date');
@@ -21,12 +21,10 @@ return new class extends Migration
             $table->time('time_in');
             //time_out
             $table->time('time_out')->nullable();
-            //latlong_in
-            $table->string('latlong_in');
-            //latlong_out
-            $table->string('latlong_out')->nullable();
-
-
+            //latlon_in
+            $table->string('latlon_in');
+            //latlon_out
+            $table->string('latlon_out')->nullable();
             $table->timestamps();
         });
     }

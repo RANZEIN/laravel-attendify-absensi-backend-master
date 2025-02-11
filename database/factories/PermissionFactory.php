@@ -18,11 +18,10 @@ class PermissionFactory extends Factory
     {
         return [
             'user_id' => 10,
-            'date_permission' =>$this->faker->date(),
-            'reason'=>$this->faker->text(),
-            'image' =>$this->faker->imageUrl(),
-            'is_approved' =>$this->faker->boolean(),
-
+            'date_permission' => $this->faker->date(),
+            'reason' => $this->faker->text(),
+            'image' => $this->faker->imageUrl(),
+            'is_approved' => $this->faker->boolean(),
         ];
     }
 }

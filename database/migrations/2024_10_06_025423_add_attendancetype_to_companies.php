@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-            $table->string('phone')->nullable();
-            $table->string('role')->nullable();
+        Schema::table('companies', function (Blueprint $table) {
+            $table->string('attendance_type')->nullable();
         });
     }
 
@@ -23,10 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-            $table->dropColumn('phone');
-            $table->dropColumn('role');
+        Schema::table('companies', function (Blueprint $table) {
+            $table->dropColumn('attendance_type');
         });
     }
 };

@@ -107,7 +107,7 @@
                                 is-invalid
                             @enderror"
                                     name="department" value="{{ $user->department }}">
-                                @error('department ')
+                                @error('departement')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -129,7 +129,7 @@
                                     <label class="selectgroup-item">
                                         <input type="radio" name="role" value="staff" class="selectgroup-input"
                                             @if ($user->role == 'staff') checked @endif>
-                                        <span class="selectgroup-button">staff</span>
+                                        <span class="selectgroup-button">Staff</span>
                                     </label>
 
                                 </div>

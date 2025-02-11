@@ -24,8 +24,8 @@ class PermissionController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $path = $image->storeAs('permissions', $image->hashName(), 'public');
-            $permission->image = 'permissions/' . $image->hashName();
+            $image->storeAs('public/permissions', $image->hashName());
+            $permission->image = $image->hashName();
         }
 
         $permission->save();

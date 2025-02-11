@@ -14,11 +14,12 @@ class Attendance extends Model
         'date',
         'time_in',
         'time_out',
-        'latlong_in',
-        'latlong_out',
+        'latlon_in',
+        'latlon_out',
     ];
 
-    public function user() {
-        return $this->belongsTo(User::class); // assuming User model has a user_id column
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

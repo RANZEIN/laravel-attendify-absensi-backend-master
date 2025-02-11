@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\support\Facades\Hash;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,30 +17,26 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Ranzein',
+            'name' => 'ranzdhika@gmail.com',
             'email' => 'ranzdhika@gmail.com',
             'password' => Hash::make('@WHF487pp31'),
         ]);
 
         // data dummy for company
-        \App\Models\Company::create(
-            [
-                'name' => 'PT.Mencari Cinta',
-                'email' => 'ranzdhika@gmail.com',
-                'address' => 'Jl.Manisi atas Gg. Reformasi No.006',
-                'latitude' => '37.7749',
-                'longitude' => '-122.4194',
-                'radius_km' => '0.5',
-                'time_in' => '08:00',
-                'time_out' => '17:00',
-            ]);
+        \App\Models\Company::create([
+            'name' => 'PT. Attendify',
+            'email' => 'ranzdhika@gmail.com',
+            'address' => 'Jl. Cibiru atas Gg. Reformasi No.6, Bandung, Jawabarat',
+            'latitude' => '-7.747033',
+            'longitude' => '110.355398',
+            'radius_km' => '0.5',
+            'time_in' => '08:00',
+            'time_out' => '17:00',
+        ]);
 
         $this->call([
             AttendanceSeeder::class,
             PermissionSeeder::class,
-            // Your other seeders here...
         ]);
-
-
     }
 }

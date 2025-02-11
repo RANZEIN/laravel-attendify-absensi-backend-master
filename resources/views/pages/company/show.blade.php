@@ -12,10 +12,10 @@
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1>Company Profile</h1>
+                <h1>Profile Perusahaan</h1>
                 <div class="section-header-breadcrumb">
                     <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
-                    <div class="breadcrumb-item">Company Profile</div>
+                    <div class="breadcrumb-item">Profile Perusahaan</div>
                 </div>
             </div>
             <div class="section-body">
@@ -67,6 +67,13 @@
                                     <div class="form-group col-md-6 col-12">
                                         <label>Waktu Pulang</label>
                                         <p>{{ $company->time_out }}</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="form-group col-md-6 col-12">
+                                        <label>Tipe Absensi</label>
+                                        <p>{{ $company->attendance_type }}</p>
                                     </div>
                                 </div>
                             </div>
