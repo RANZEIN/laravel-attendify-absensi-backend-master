@@ -46,7 +46,7 @@
     @endphp
     <div class="container">
         <div class="header">
-            <h1>QR Absen FIC16 Jilid 2</h1>
+            <h1>QR Absen PT. Attendify</h1>
             <p>Tanggal: {{ Carbon::parse($qrAbsen->date)->locale('id')->isoFormat('DD MMMM YYYY') }}</p>
         </div>
         <div class="qr-container">

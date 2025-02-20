@@ -88,8 +88,8 @@
                             <div class="is-online"></div>
                         </div>
                         <div class="dropdown-item-desc">
-                            <b>Kusnaedi</b>
-                            <p>Hello, Bro!</p>
+                            <b>Andhika</b>
+                            <p>IZININ GUA COKKK</p>
                             <div class="time">10 Hours Ago</div>
                         </div>
                     </a>

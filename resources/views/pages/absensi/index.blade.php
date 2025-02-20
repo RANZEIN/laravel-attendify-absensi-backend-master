@@ -67,6 +67,7 @@
 
                                             <th>Action</th>
                                         </tr>
+                                    @if(isset($attendances) && $attendances->count() > 0)
                                         @foreach ($attendances as $attendance)
                                             <tr>
 
@@ -109,8 +110,9 @@
                                                 </td>
                                             </tr>
                                         @endforeach
-
-
+                                    @else
+                                        <p>Data absensi tidak tersedia.</p>
+                                    @endif
                                     </table>
                                 </div>
                                 <div class="float-right">
