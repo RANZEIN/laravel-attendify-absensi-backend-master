@@ -2,47 +2,59 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CompanyController;
+use App\Http\Controllers\Api\AttendanceController;
+use App\Http\Controllers\Api\PermissionController;
+use App\Http\Controllers\Api\NoteController;
+use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\QrAbsenController;
+use App\Http\Controllers\TimeOffController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-//login
-Route::post('/login', [App\Http\Controllers\Api\AuthController::class, 'login']);
+// Login
+Route::post('/login', [AuthController::class, 'login']);
 
-//logout
-Route::post('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout'])->middleware('auth:sanctum');
+// Protected routes
+Route::middleware('auth:sanctum')->group(function () {
+    // Logout
+    Route::post('/logout', [AuthController::class, 'logout']);
 
-//company
-Route::get('/company', [App\Http\Controllers\Api\CompanyController::class, 'show'])->middleware('auth:sanctum');
+    // Company
+    Route::get('/company', [CompanyController::class, 'show']);
 
-//checkin
-Route::post('/checkin', [App\Http\Controllers\Api\AttendanceController::class, 'checkin'])->middleware('auth:sanctum');
+    // Attendance
+    Route::post('/checkin', [AttendanceController::class, 'checkin']);
+    Route::post('/checkout', [AttendanceController::class, 'checkout']);
+    Route::get('/is-checkin', [AttendanceController::class, 'isCheckedin']);
+    Route::get('/api-attendances', [AttendanceController::class, 'index']);
 
-//checkout
-Route::post('/checkout', [App\Http\Controllers\Api\AttendanceController::class, 'checkout'])->middleware('auth:sanctum');
+    // User
+    Route::post('/update-profile', [AuthController::class, 'updateProfile']);
+    Route::post('/update-fcm-token', [AuthController::class, 'updateFcmToken']);
+    Route::get('/api-user/{id}', [UserController::class, 'getUserId']);
+    Route::post('/api-user/edit', [UserController::class, 'updateProfile']);
 
-//is checkin
-Route::get('/is-checkin', [App\Http\Controllers\Api\AttendanceController::class, 'isCheckedin'])->middleware('auth:sanctum');
+    // Permissions
+    Route::apiResource('/api-permissions', PermissionController::class);
 
-//update profile
-Route::post('/update-profile', [App\Http\Controllers\Api\AuthController::class, 'updateProfile'])->middleware('auth:sanctum');
+    // Notes
+    Route::apiResource('/api-notes', NoteController::class);
 
-//create permission
-Route::apiResource('/api-permissions', App\Http\Controllers\Api\PermissionController::class)->middleware('auth:sanctum');
+    // QR
+    Route::post('/check-qr', [QrAbsenController::class, 'checkQR']);
 
-//notes
-Route::apiResource('/api-notes', App\Http\Controllers\Api\NoteController::class)->middleware('auth:sanctum');
+    // Time Off routes
+    Route::get('/time-off', [TimeOffController::class, 'apiGetTimeOffs']);
+    Route::post('/time-off', [TimeOffController::class, 'apiCreateTimeOff']);
+    Route::get('/time-off/{id}', [TimeOffController::class, 'apiGetTimeOff']);
+    Route::put('/time-off/{id}', [TimeOffController::class, 'apiUpdateTimeOff']);
+    Route::delete('/time-off/{id}', [TimeOffController::class, 'apiDestroyTimeOff']);
+    Route::get('/leave-balance', [TimeOffController::class, 'apiGetLeaveBalance']);
 
-//update fcm token
-Route::post('/update-fcm-token', [App\Http\Controllers\Api\AuthController::class, 'updateFcmToken'])->middleware('auth:sanctum');
-
-//get attendance
-Route::get('/api-attendances', [App\Http\Controllers\Api\AttendanceController::class, 'index'])->middleware('auth:sanctum');
-
-Route::get('/api-user/{id}', [App\Http\Controllers\Api\UserController::class, 'getUserId'])->middleware('auth:sanctum');
-
-//update user
-Route::post('/api-user/edit', [App\Http\Controllers\Api\UserController::class, 'updateProfile'])->middleware('auth:sanctum');
-
-Route::post('/check-qr', [App\Http\Controllers\Api\QrAbsenController::class, 'checkQR'])->middleware('auth:sanctum');
+    // Optional: Keep the status filter route if needed
+    Route::get('/time-off/status/{status}', [TimeOffController::class, 'getByStatus']);
+});

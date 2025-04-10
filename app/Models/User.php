@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,7 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -22,12 +22,10 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
-        'role',
-        'position',
-        'department',
-        'face_embedding',
         'image_url',
-        'fcm_token'
+        'face_embedding',
+        'fcm_token',
+        'leave_balance',
     ];
 
     /**
@@ -41,15 +39,35 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
-    protected function casts(): array
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    // Relationship with TimeOff
+    public function timeOffs()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(TimeOff::class);
+    }
+
+    // Relationship with Attendance
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    // Relationship with Permission
+    public function permissions()
+    {
+        return $this->hasMany(Permission::class);
+    }
+
+    // Relationship with Note
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
     }
 }

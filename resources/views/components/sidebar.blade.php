@@ -46,5 +46,12 @@
                 </a>
             </li>
 
+            <li class="nav-item">
+                <a href="{{ route('time_offs.index') }}" class="nav-link">
+                    <i class="fas fa-columns"></i>
+                    <span>Time Off</span>
+                </a>
+            </li>
+
     </aside>
 </div>

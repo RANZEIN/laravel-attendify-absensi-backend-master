@@ -5,19 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Attendance extends Model
+class TimeOff extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
-        'date',
-        'time_in',
-        'time_out',
-        'latlon_in',
-        'latlon_out',
+        'type',
+        'start_date',
+        'end_date',
+        'days',
+        'reason',
         'status',
-        'reason'
+        'document_url',
     ];
 
     // Relationship with User
