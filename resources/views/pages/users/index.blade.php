@@ -237,6 +237,121 @@
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
         }
 
+        /* Time Off Balance Styles */
+        .leave-balance {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .leave-type {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+        }
+
+        .leave-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .leave-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .leave-icon.annual {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .leave-icon.sick {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        .leave-icon.unpaid {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .leave-value {
+            font-weight: 600;
+        }
+
+        .leave-progress {
+            height: 4px;
+            background-color: #e2e8f0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 2px;
+        }
+
+        .leave-progress-bar {
+            height: 100%;
+            border-radius: 2px;
+        }
+
+        .leave-progress-bar.annual {
+            background-color: var(--success-color);
+        }
+
+        .leave-progress-bar.sick {
+            background-color: var(--danger-color);
+        }
+
+        .leave-progress-bar.warning {
+            background-color: var(--warning-color);
+        }
+
+        .leave-progress-bar.danger {
+            background-color: var(--danger-color);
+        }
+
+        .leave-tooltip {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .leave-tooltip:hover .leave-tooltip-content {
+            display: block;
+        }
+
+        .leave-tooltip-content {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1e293b;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            z-index: 10;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 5px;
+        }
+
+        .leave-tooltip-content::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1e293b transparent transparent transparent;
+        }
+
         @media (max-width: 768px) {
             .responsive-table {
                 overflow-x: auto;
@@ -294,6 +409,7 @@
                                                 <th>Contact Info</th>
                                                 <th>Position</th>
                                                 <th>Role</th>
+                                                <th>Time Off Balance</th>
                                                 <th>Created</th>
                                                 <th class="text-center">Actions</th>
                                             </tr>
@@ -323,6 +439,61 @@
                                                         <span class="status-badge {{ $user->role }}">{{ ucfirst($user->role) }}</span>
                                                     </td>
                                                     <td>
+                                                        <div class="leave-balance">
+                                                            <div class="leave-type">
+                                                                <div class="leave-label leave-tooltip">
+                                                                    <div class="leave-icon annual">
+                                                                        <i class="fas fa-calendar-check"></i>
+                                                                    </div>
+                                                                    <span>Jatah Cuti</span>
+                                                                    <div class="leave-tooltip-content">
+                                                                        Jatah cuti 13 hari yang digunakan untuk:
+                                                                        <br>- Cuti Tahunan
+                                                                        <br>- Izin Tidak Masuk
+                                                                        <br>- Sakit dengan Surat Dokter
+                                                                        <br>- Sakit tanpa Surat Dokter
+                                                                    </div>
+                                                                </div>
+                                                                <div class="leave-value">
+                                                                    {{ $user->leave_stats['leaveRemaining'] }} / {{ $user->leave_stats['totalAllowance'] }} hari
+                                                                </div>
+                                                            </div>
+                                                            <div class="leave-progress">
+                                                                @php
+                                                                    $total = $user->leave_stats['totalAllowance'];
+                                                                    $remaining = $user->leave_stats['leaveRemaining'];
+                                                                    $percentage = $total > 0 ? ($remaining / $total) * 100 : 0;
+                                                                    $colorClass = $percentage > 50 ? 'annual' : ($percentage > 25 ? 'warning' : 'danger');
+                                                                @endphp
+                                                                <div class="leave-progress-bar {{ $colorClass }}" style="width: {{ $percentage }}%"></div>
+                                                            </div>
+
+                                                            @if($user->leave_stats['leaveUsed'] > 0)
+                                                                <div class="mt-2 text-muted" style="font-size: 0.7rem;">
+                                                                    <span class="font-weight-bold">Cuti terpakai: {{ $user->leave_stats['leaveUsed'] }} hari</span>
+
+                                                                    @foreach($user->leave_stats['leaveTypes'] as $type => $days)
+                                                                        <br>
+                                                                        <span class="mr-1">
+                                                                            @if($type == 'cuti_tahunan')
+                                                                                Cuti Tahunan:
+                                                                            @elseif($type == 'izin_tidak_masuk')
+                                                                                Izin:
+                                                                            @elseif($type == 'sakit_dengan_surat_dokter')
+                                                                                Sakit (dgn surat):
+                                                                            @elseif($type == 'sakit_tanpa_surat_dokter')
+                                                                                Sakit (tanpa surat):
+                                                                            @else
+                                                                                {{ $type }}:
+                                                                            @endif
+                                                                            {{ $days }} hari
+                                                                        </span>
+                                                                    @endforeach
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </td>
+                                                    <td>
                                                         <div>{{ $user->created_at->format('M d, Y') }}</div>
                                                         <div class="text-muted small">{{ $user->created_at->format('h:i A') }}</div>
                                                     </td>
@@ -347,7 +518,7 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="6">
+                                                    <td colspan="7">
                                                         <div class="empty-state">
                                                             <i class="fas fa-user-slash"></i>
                                                             <p>No users found</p>

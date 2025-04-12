@@ -13,6 +13,14 @@ use Illuminate\Support\Facades\Auth;
 
 class TimeOffController extends Controller
 {
+    // Daftar tipe cuti yang mengurangi jatah cuti
+    private $leaveBalanceTypes = [
+        'cuti_tahunan',
+        'izin_tidak_masuk',
+        'sakit_dengan_surat_dokter',
+        'sakit_tanpa_surat_dokter'
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -77,7 +85,7 @@ class TimeOffController extends Controller
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'type' => 'required|in:annual_leave,sick_leave,unpaid_leave',
+            'type' => 'required|in:cuti_tahunan,izin_jam_kerja,izin_sebelum_atau_sesudah_istirahat,cuti_umroh,cuti_haji,dinas_dalam_kota,dinas_luar_kota,izin_tidak_masuk,sakit_berkepanjangan_12_bulan_pertama,sakit_berkepanjangan_4_bulan_pertama,sakit_berkepanjangan_8_bulan_pertama,sakit_berkepanjangan_diatas_12_bulan_pertama,sakit_dengan_surat_dokter,sakit_tanpa_surat_dokter,cuti_menikah,cuti_menikahkan_anak,cuti_khitanan_anak,cuti_istri_melahirkan_atau_keguguran,cuti_keluarga_meninggal,cuti_anggota_keluarga_dalam_satu_rumah_meninggal',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'reason' => 'required|string',
@@ -85,10 +93,12 @@ class TimeOffController extends Controller
             'document' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
         ]);
 
-        // Calculate number of days
+        // Calculate number of days (fixed calculation)
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
-        $days = $endDate->diffInDays($startDate) + 1;
+
+        // Include start and end date in the count (end - start + 1)
+        $days = $startDate->diffInDays($endDate->copy()->startOfDay()) + 1;
 
         // Handle document upload
         $documentUrl = null;
@@ -111,8 +121,8 @@ class TimeOffController extends Controller
         $timeOff->document_url = $documentUrl;
         $timeOff->save();
 
-        // If approved and annual leave, update user's leave balance
-        if ($request->status === 'approved' && $request->type === 'annual_leave') {
+        // If approved and type reduces leave balance, update user's leave balance
+        if ($request->status === 'approved' && in_array($request->type, $this->leaveBalanceTypes)) {
             $user = User::find($request->user_id);
             if ($user && $user->leave_balance >= $days) {
                 $user->leave_balance -= $days;
@@ -120,8 +130,16 @@ class TimeOffController extends Controller
             }
         }
 
+        // Validate start date and end date
+        if ($endDate->lt($startDate)) {
+            return response()->json([
+                'message' => 'Tanggal akhir tidak boleh lebih awal dari tanggal mulai'
+            ], 422);
+        }
+
+
         // For sick leave, create attendance records if approved
-        if ($request->type === 'sick_leave' && $request->status === 'approved') {
+        if (($request->type === 'sakit_dengan_surat_dokter' || $request->type === 'sakit_tanpa_surat_dokter') && $request->status === 'approved') {
             $this->createAttendanceForSickLeave(
                 $request->user_id,
                 $request->start_date,
@@ -170,7 +188,7 @@ class TimeOffController extends Controller
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'type' => 'required|in:annual_leave,sick_leave,unpaid_leave',
+            'type' => 'required|in:cuti_tahunan,izin_jam_kerja,izin_sebelum_atau_sesudah_istirahat,cuti_umroh,cuti_haji,dinas_dalam_kota,dinas_luar_kota,izin_tidak_masuk,sakit_berkepanjangan_12_bulan_pertama,sakit_berkepanjangan_4_bulan_pertama,sakit_berkepanjangan_8_bulan_pertama,sakit_berkepanjangan_diatas_12_bulan_pertama,sakit_dengan_surat_dokter,sakit_tanpa_surat_dokter,cuti_menikah,cuti_menikahkan_anak,cuti_khitanan_anak,cuti_istri_melahirkan_atau_keguguran,cuti_keluarga_meninggal,cuti_anggota_keluarga_dalam_satu_rumah_meninggal',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'reason' => 'required|string',
@@ -185,11 +203,15 @@ class TimeOffController extends Controller
         $oldType = $timeOff->type;
         $oldDays = $timeOff->days;
         $oldUserId = $timeOff->user_id;
+        $oldReducesBalance = in_array($oldType, $this->leaveBalanceTypes);
+        $newReducesBalance = in_array($request->type, $this->leaveBalanceTypes);
 
-        // Calculate number of days
+        // Calculate number of days (fixed calculation)
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
-        $days = $endDate->diffInDays($startDate) + 1;
+
+        // Include start and end date in the count (end - start + 1)
+        $days = $startDate->diffInDays($endDate->copy()->startOfDay()) + 1;
 
         // Handle document upload
         if ($request->hasFile('document')) {
@@ -217,26 +239,47 @@ class TimeOffController extends Controller
         $timeOff->status = $request->status;
         $timeOff->save();
 
-        // Handle leave balance updates for annual leave
-        if ($timeOff->type === 'annual_leave') {
-            $user = User::find($timeOff->user_id);
+        // Handle leave balance updates
+        $user = User::find($timeOff->user_id);
+        if ($user) {
+            // If was approved and reduced balance, but now rejected/pending, restore balance
+            if ($statusChanged && $oldStatus === 'approved' && $request->status !== 'approved' && $oldReducesBalance) {
+                $user->leave_balance += $oldDays;
+                $user->save();
+            }
 
-            // If newly approved, deduct from balance
-            if ($statusChanged && $request->status === 'approved' && $user) {
+            // If newly approved and reduces balance, deduct from balance
+            if ($statusChanged && $request->status === 'approved' && $newReducesBalance) {
                 if ($user->leave_balance >= $days) {
                     $user->leave_balance -= $days;
                     $user->save();
                 }
             }
 
-            // If was approved but now rejected/pending, restore balance
-            if ($statusChanged && $oldStatus === 'approved' && $request->status !== 'approved' && $user) {
-                $user->leave_balance += $oldDays;
-                $user->save();
+            // If approved, type changed, and balance impact changed
+            if (!$statusChanged && $request->status === 'approved' && $oldType !== $request->type) {
+                // If old type reduced balance but new doesn't, restore balance
+                if ($oldReducesBalance && !$newReducesBalance) {
+                    $user->leave_balance += $oldDays;
+                    $user->save();
+                }
+                // If old type didn't reduce balance but new does, deduct balance
+                else if (!$oldReducesBalance && $newReducesBalance) {
+                    if ($user->leave_balance >= $days) {
+                        $user->leave_balance -= $days;
+                        $user->save();
+                    }
+                }
+                // If both reduce balance but days changed, adjust the difference
+                else if ($oldReducesBalance && $newReducesBalance && $oldDays !== $days) {
+                    $difference = $oldDays - $days;
+                    $user->leave_balance += $difference;
+                    $user->save();
+                }
             }
 
-            // If approved but days changed, adjust balance
-            if (!$statusChanged && $request->status === 'approved' && $oldDays !== $days && $user) {
+            // If approved, same type that reduces balance, but days changed
+            if (!$statusChanged && $request->status === 'approved' && $oldType === $request->type && $newReducesBalance && $oldDays !== $days) {
                 $difference = $oldDays - $days;
                 $user->leave_balance += $difference;
                 $user->save();
@@ -244,7 +287,7 @@ class TimeOffController extends Controller
         }
 
         // For sick leave, create attendance records if newly approved
-        if ($timeOff->type === 'sick_leave' && $statusChanged && $request->status === 'approved') {
+        if (($timeOff->type === 'sakit_dengan_surat_dokter' || $timeOff->type === 'sakit_tanpa_surat_dokter') && $statusChanged && $request->status === 'approved') {
             $this->createAttendanceForSickLeave(
                 $timeOff->user_id,
                 $timeOff->start_date,
@@ -267,8 +310,8 @@ class TimeOffController extends Controller
     {
         $timeOff = TimeOff::findOrFail($id);
 
-        // If approved annual leave, restore leave balance
-        if ($timeOff->status === 'approved' && $timeOff->type === 'annual_leave') {
+        // If approved and type reduces leave balance, restore leave balance
+        if ($timeOff->status === 'approved' && in_array($timeOff->type, $this->leaveBalanceTypes)) {
             $user = User::find($timeOff->user_id);
             if ($user) {
                 $user->leave_balance += $timeOff->days;
@@ -302,8 +345,8 @@ class TimeOffController extends Controller
             $timeOff->status = 'approved';
             $timeOff->save();
 
-            // If annual leave, update user's leave balance
-            if ($timeOff->type === 'annual_leave') {
+            // If type reduces leave balance, update user's leave balance
+            if (in_array($timeOff->type, $this->leaveBalanceTypes)) {
                 $user = User::find($timeOff->user_id);
                 if ($user && $user->leave_balance >= $timeOff->days) {
                     $user->leave_balance -= $timeOff->days;
@@ -312,7 +355,7 @@ class TimeOffController extends Controller
             }
 
             // For sick leave, create attendance records
-            if ($timeOff->type === 'sick_leave') {
+            if ($timeOff->type === 'sakit_dengan_surat_dokter' || $timeOff->type === 'sakit_tanpa_surat_dokter') {
                 $this->createAttendanceForSickLeave(
                     $timeOff->user_id,
                     $timeOff->start_date,
@@ -336,8 +379,8 @@ class TimeOffController extends Controller
     {
         $timeOff = TimeOff::findOrFail($id);
 
-        // If it was approved and is annual leave, restore leave balance
-        if ($timeOff->status === 'approved' && $timeOff->type === 'annual_leave') {
+        // If it was approved and type reduces leave balance, restore leave balance
+        if ($timeOff->status === 'approved' && in_array($timeOff->type, $this->leaveBalanceTypes)) {
             $user = User::find($timeOff->user_id);
             if ($user) {
                 $user->leave_balance += $timeOff->days;
@@ -365,6 +408,8 @@ class TimeOffController extends Controller
     {
         $start = Carbon::parse($startDate);
         $end = Carbon::parse($endDate);
+
+        // Include start and end day in the count
         $days = $end->diffInDays($start) + 1;
 
         $currentDate = $start->copy();
@@ -411,15 +456,14 @@ class TimeOffController extends Controller
             $userId = Auth::id();
         }
 
-        // Default values
+        // Default values - total jatah cuti adalah 13 hari
+        $totalLeaveAllowance = 13;
+
         $stats = [
-            'annualLeaveTotal' => 16, // Default annual leave allowance
-            'annualLeaveUsed' => 0,
-            'annualLeaveRemaining' => 16,
-            'sickLeaveTotal' => 10, // Default sick leave allowance
-            'sickLeaveUsed' => 0,
-            'sickLeaveRemaining' => 10,
-            'unpaidLeaveUsed' => 0
+            'totalAllowance' => $totalLeaveAllowance,
+            'leaveUsed' => 0,
+            'leaveRemaining' => $totalLeaveAllowance,
+            'leaveTypes' => []
         ];
 
         if ($userId) {
@@ -429,34 +473,29 @@ class TimeOffController extends Controller
                 // Get current year
                 $currentYear = Carbon::now()->year;
 
-                // Annual leave used this year
-                $annualLeaveUsed = TimeOff::where('user_id', $userId)
-                    ->where('type', 'annual_leave')
+                // Get all approved time offs that reduce leave balance
+                $leaveUsed = TimeOff::where('user_id', $userId)
+                    ->whereIn('type', $this->leaveBalanceTypes)
                     ->where('status', 'approved')
                     ->whereYear('start_date', $currentYear)
-                    ->sum('days');
+                    ->get();
 
-                // Sick leave used this year
-                $sickLeaveUsed = TimeOff::where('user_id', $userId)
-                    ->where('type', 'sick_leave')
-                    ->where('status', 'approved')
-                    ->whereYear('start_date', $currentYear)
-                    ->sum('days');
+                // Calculate total used days
+                $totalUsed = $leaveUsed->sum('days');
 
-                // Unpaid leave used this year
-                $unpaidLeaveUsed = TimeOff::where('user_id', $userId)
-                    ->where('type', 'unpaid_leave')
-                    ->where('status', 'approved')
-                    ->whereYear('start_date', $currentYear)
-                    ->sum('days');
+                // Group by type
+                $leaveByType = [];
+                foreach ($this->leaveBalanceTypes as $type) {
+                    $used = $leaveUsed->where('type', $type)->sum('days');
+                    if ($used > 0) {
+                        $leaveByType[$type] = $used;
+                    }
+                }
 
-                // Update stats
-                $stats['annualLeaveRemaining'] = $user->leave_balance;
-                $stats['annualLeaveUsed'] = $annualLeaveUsed;
-                $stats['annualLeaveTotal'] = $stats['annualLeaveRemaining'] + $annualLeaveUsed;
-                $stats['sickLeaveUsed'] = $sickLeaveUsed;
-                $stats['sickLeaveRemaining'] = $stats['sickLeaveTotal'] - $sickLeaveUsed;
-                $stats['unpaidLeaveUsed'] = $unpaidLeaveUsed;
+                // Update stats - sisa cuti adalah leave_balance dari database
+                $stats['leaveRemaining'] = $user->leave_balance;
+                $stats['leaveUsed'] = $totalLeaveAllowance - $user->leave_balance;
+                $stats['leaveTypes'] = $leaveByType;
             }
         }
 
@@ -524,7 +563,7 @@ class TimeOffController extends Controller
         }
 
         $validator = validator($request->all(), [
-            'type' => 'required|in:annual_leave,sick_leave,unpaid_leave',
+            'type' => 'required|in:cuti_tahunan,izin_jam_kerja,izin_sebelum_atau_sesudah_istirahat,cuti_umroh,cuti_haji,dinas_dalam_kota,dinas_luar_kota,izin_tidak_masuk,sakit_berkepanjangan_12_bulan_pertama,sakit_berkepanjangan_4_bulan_pertama,sakit_berkepanjangan_8_bulan_pertama,sakit_berkepanjangan_diatas_12_bulan_pertama,sakit_dengan_surat_dokter,sakit_tanpa_surat_dokter,cuti_menikah,cuti_menikahkan_anak,cuti_khitanan_anak,cuti_istri_melahirkan_atau_keguguran,cuti_keluarga_meninggal,cuti_anggota_keluarga_dalam_satu_rumah_meninggal',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'reason' => 'required|string',
@@ -538,9 +577,11 @@ class TimeOffController extends Controller
             ], 422);
         }
 
-        // Calculate number of days
+        // Calculate number of days (fixed calculation)
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
+
+        // Include start and end date in the count (end - start + 1)
         $days = $endDate->diffInDays($startDate) + 1;
 
         // Create time off request
@@ -628,7 +669,7 @@ class TimeOffController extends Controller
         }
 
         $validator = validator($request->all(), [
-            'type' => 'required|in:annual_leave,sick_leave,unpaid_leave',
+            'type' => 'required|in:cuti_tahunan,izin_jam_kerja,izin_sebelum_atau_sesudah_istirahat,cuti_umroh,cuti_haji,dinas_dalam_kota,dinas_luar_kota,izin_tidak_masuk,sakit_berkepanjangan_12_bulan_pertama,sakit_berkepanjangan_4_bulan_pertama,sakit_berkepanjangan_8_bulan_pertama,sakit_berkepanjangan_diatas_12_bulan_pertama,sakit_dengan_surat_dokter,sakit_tanpa_surat_dokter,cuti_menikah,cuti_menikahkan_anak,cuti_khitanan_anak,cuti_istri_melahirkan_atau_keguguran,cuti_keluarga_meninggal,cuti_anggota_keluarga_dalam_satu_rumah_meninggal',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'reason' => 'required|string',
@@ -642,9 +683,11 @@ class TimeOffController extends Controller
             ], 422);
         }
 
-        // Calculate number of days
+        // Calculate number of days (fixed calculation)
         $startDate = Carbon::parse($request->start_date);
         $endDate = Carbon::parse($request->end_date);
+
+        // Include start and end date in the count (end - start + 1)
         $days = $endDate->diffInDays($startDate) + 1;
 
         // Update time off request

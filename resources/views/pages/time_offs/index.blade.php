@@ -80,12 +80,46 @@
                                                     <tr>
                                                         <td>{{ $timeOff->user->name }}</td>
                                                         <td>
-                                                            @if($timeOff->type == 'annual_leave')
-                                                                <span class="badge badge-success">Annual Leave</span>
-                                                            @elseif($timeOff->type == 'sick_leave')
-                                                                <span class="badge badge-danger">Sick Leave</span>
-                                                            @elseif($timeOff->type == 'unpaid_leave')
-                                                                <span class="badge badge-warning">Unpaid Leave</span>
+                                                            @if($timeOff->type == 'cuti_tahunan')
+                                                                <span class="badge badge-success">Cuti Tahunan</span>
+                                                            @elseif($timeOff->type == 'izin_jam_kerja')
+                                                                <span class="badge badge-primary">Izin Jam Kerja</span>
+                                                            @elseif($timeOff->type == 'izin_sebelum_atau_sesudah_istirahat')
+                                                                <span class="badge badge-primary">Izin Sebelum atau Sesudah Istirahat</span>
+                                                            @elseif($timeOff->type == 'cuti_umroh')
+                                                                <span class="badge badge-info">Cuti Umroh</span>
+                                                            @elseif($timeOff->type == 'cuti_haji')
+                                                                <span class="badge badge-info">Cuti Haji</span>
+                                                            @elseif($timeOff->type == 'dinas_dalam_kota')
+                                                                <span class="badge badge-secondary">Dinas Dalam Kota</span>
+                                                            @elseif($timeOff->type == 'dinas_luar_kota')
+                                                                <span class="badge badge-secondary">Dinas Luar Kota</span>
+                                                            @elseif($timeOff->type == 'izin_tidak_masuk')
+                                                                <span class="badge badge-warning">Izin Tidak Masuk</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_12_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit 12 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_4_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit 4 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_8_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit 8 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_diatas_12_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit Diatas 12 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_dengan_surat_dokter')
+                                                                <span class="badge badge-danger">Sakit dengan Surat Dokter</span>
+                                                            @elseif($timeOff->type == 'sakit_tanpa_surat_dokter')
+                                                                <span class="badge badge-danger">Sakit tanpa Surat Dokter</span>
+                                                            @elseif($timeOff->type == 'cuti_menikah')
+                                                                <span class="badge badge-success">Cuti Menikah</span>
+                                                            @elseif($timeOff->type == 'cuti_menikahkan_anak')
+                                                                <span class="badge badge-success">Cuti Menikahkan Anak</span>
+                                                            @elseif($timeOff->type == 'cuti_khitanan_anak')
+                                                                <span class="badge badge-success">Cuti Khitanan Anak</span>
+                                                            @elseif($timeOff->type == 'cuti_istri_melahirkan_atau_keguguran')
+                                                                <span class="badge badge-success">Cuti Istri Melahirkan atau Keguguran</span>
+                                                            @elseif($timeOff->type == 'cuti_keluarga_meninggal')
+                                                                <span class="badge badge-dark">Cuti Keluarga Meninggal</span>
+                                                            @elseif($timeOff->type == 'cuti_anggota_keluarga_dalam_satu_rumah_meninggal')
+                                                                <span class="badge badge-dark">Cuti Anggota Keluarga Dalam Satu Rumah Meninggal</span>
                                                             @endif
                                                         </td>
                                                         <td>{{ \Carbon\Carbon::parse($timeOff->start_date)->format('d M Y') }}</td>
@@ -153,12 +187,46 @@
                                                     <tr>
                                                         <td>{{ $timeOff->user->name }}</td>
                                                         <td>
-                                                            @if($timeOff->type == 'annual_leave')
-                                                                <span class="badge badge-success">Annual Leave</span>
-                                                            @elseif($timeOff->type == 'sick_leave')
-                                                                <span class="badge badge-danger">Sick Leave</span>
-                                                            @elseif($timeOff->type == 'unpaid_leave')
-                                                                <span class="badge badge-warning">Unpaid Leave</span>
+                                                            @if($timeOff->type == 'cuti_tahunan')
+                                                                <span class="badge badge-success">Cuti Tahunan</span>
+                                                            @elseif($timeOff->type == 'izin_jam_kerja')
+                                                                <span class="badge badge-primary">Izin Jam Kerja</span>
+                                                            @elseif($timeOff->type == 'izin_sebelum_atau_sesudah_istirahat')
+                                                                <span class="badge badge-primary">Izin Sebelum atau Sesudah Istirahat</span>
+                                                            @elseif($timeOff->type == 'cuti_umroh')
+                                                                <span class="badge badge-info">Cuti Umroh</span>
+                                                            @elseif($timeOff->type == 'cuti_haji')
+                                                                <span class="badge badge-info">Cuti Haji</span>
+                                                            @elseif($timeOff->type == 'dinas_dalam_kota')
+                                                                <span class="badge badge-secondary">Dinas Dalam Kota</span>
+                                                            @elseif($timeOff->type == 'dinas_luar_kota')
+                                                                <span class="badge badge-secondary">Dinas Luar Kota</span>
+                                                            @elseif($timeOff->type == 'izin_tidak_masuk')
+                                                                <span class="badge badge-warning">Izin Tidak Masuk</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_12_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit 12 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_4_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit 4 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_8_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit 8 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_diatas_12_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit Diatas 12 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_dengan_surat_dokter')
+                                                                <span class="badge badge-danger">Sakit dengan Surat Dokter</span>
+                                                            @elseif($timeOff->type == 'sakit_tanpa_surat_dokter')
+                                                                <span class="badge badge-danger">Sakit tanpa Surat Dokter</span>
+                                                            @elseif($timeOff->type == 'cuti_menikah')
+                                                                <span class="badge badge-success">Cuti Menikah</span>
+                                                            @elseif($timeOff->type == 'cuti_menikahkan_anak')
+                                                                <span class="badge badge-success">Cuti Menikahkan Anak</span>
+                                                            @elseif($timeOff->type == 'cuti_khitanan_anak')
+                                                                <span class="badge badge-success">Cuti Khitanan Anak</span>
+                                                            @elseif($timeOff->type == 'cuti_istri_melahirkan_atau_keguguran')
+                                                                <span class="badge badge-success">Cuti Istri Melahirkan atau Keguguran</span>
+                                                            @elseif($timeOff->type == 'cuti_keluarga_meninggal')
+                                                                <span class="badge badge-dark">Cuti Keluarga Meninggal</span>
+                                                            @elseif($timeOff->type == 'cuti_anggota_keluarga_dalam_satu_rumah_meninggal')
+                                                                <span class="badge badge-dark">Cuti Anggota Keluarga Dalam Satu Rumah Meninggal</span>
                                                             @endif
                                                         </td>
                                                         <td>{{ \Carbon\Carbon::parse($timeOff->start_date)->format('d M Y') }}</td>
@@ -217,15 +285,50 @@
                                                 @foreach ($approvedTimeOffs as $timeOff)
                                                     <tr>
                                                         <td>{{ $timeOff->user->name }}</td>
-                                                        <td>
-                                                            @if($timeOff->type == 'annual_leave')
-                                                                <span class="badge badge-success">Annual Leave</span>
-                                                            @elseif($timeOff->type == 'sick_leave')
-                                                                <span class="badge badge-danger">Sick Leave</span>
-                                                            @elseif($timeOff->type == 'unpaid_leave')
-                                                                <span class="badge badge-warning">Unpaid Leave</span>
+                                                        <p>
+                                                            @if($timeOff->type == 'cuti_tahunan')
+                                                                <span class="badge badge-success">Cuti Tahunan</span>
+                                                            @elseif($timeOff->type == 'izin_jam_kerja')
+                                                                <span class="badge badge-primary">Izin Jam Kerja</span>
+                                                            @elseif($timeOff->type == 'izin_sebelum_atau_sesudah_istirahat')
+                                                                <span class="badge badge-primary">Izin Sebelum atau Sesudah Istirahat</span>
+                                                            @elseif($timeOff->type == 'cuti_umroh')
+                                                                <span class="badge badge-info">Cuti Umroh</span>
+                                                            @elseif($timeOff->type == 'cuti_haji')
+                                                                <span class="badge badge-info">Cuti Haji</span>
+                                                            @elseif($timeOff->type == 'dinas_dalam_kota')
+                                                                <span class="badge badge-secondary">Dinas Dalam Kota</span>
+                                                            @elseif($timeOff->type == 'dinas_luar_kota')
+                                                                <span class="badge badge-secondary">Dinas Luar Kota</span>
+                                                            @elseif($timeOff->type == 'izin_tidak_masuk')
+                                                                <span class="badge badge-warning">Izin Tidak Masuk</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_12_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit 12 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_4_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit 4 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_8_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit 8 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_diatas_12_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit Diatas 12 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_dengan_surat_dokter')
+                                                                <span class="badge badge-danger">Sakit dengan Surat Dokter</span>
+                                                            @elseif($timeOff->type == 'sakit_tanpa_surat_dokter')
+                                                                <span class="badge badge-danger">Sakit tanpa Surat Dokter</span>
+                                                            @elseif($timeOff->type == 'cuti_menikah')
+                                                                <span class="badge badge-success">Cuti Menikah</span>
+                                                            @elseif($timeOff->type == 'cuti_menikahkan_anak')
+                                                                <span class="badge badge-success">Cuti Menikahkan Anak</span>
+                                                            @elseif($timeOff->type == 'cuti_khitanan_anak')
+                                                                <span class="badge badge-success">Cuti Khitanan Anak</span>
+                                                            @elseif($timeOff->type == 'cuti_istri_melahirkan_atau_keguguran')
+                                                                <span class="badge badge-success">Cuti Istri Melahirkan atau Keguguran</span>
+                                                            @elseif($timeOff->type == 'cuti_keluarga_meninggal')
+                                                                <span class="badge badge-dark">Cuti Keluarga Meninggal</span>
+                                                            @elseif($timeOff->type == 'cuti_anggota_keluarga_dalam_satu_rumah_meninggal')
+                                                                <span class="badge badge-dark">Cuti Anggota Keluarga Dalam Satu Rumah Meninggal</span>
                                                             @endif
-                                                        </td>
+                                                        </p>
+
                                                         <td>{{ \Carbon\Carbon::parse($timeOff->start_date)->format('d M Y') }}</td>
                                                         <td>{{ \Carbon\Carbon::parse($timeOff->end_date)->format('d M Y') }}</td>
                                                         <td>{{ $timeOff->days }}</td>
@@ -277,12 +380,46 @@
                                                     <tr>
                                                         <td>{{ $timeOff->user->name }}</td>
                                                         <td>
-                                                            @if($timeOff->type == 'annual_leave')
-                                                                <span class="badge badge-success">Annual Leave</span>
-                                                            @elseif($timeOff->type == 'sick_leave')
-                                                                <span class="badge badge-danger">Sick Leave</span>
-                                                            @elseif($timeOff->type == 'unpaid_leave')
-                                                                <span class="badge badge-warning">Unpaid Leave</span>
+                                                            @if($timeOff->type == 'cuti_tahunan')
+                                                                <span class="badge badge-success">Cuti Tahunan</span>
+                                                            @elseif($timeOff->type == 'izin_jam_kerja')
+                                                                <span class="badge badge-primary">Izin Jam Kerja</span>
+                                                            @elseif($timeOff->type == 'izin_sebelum_atau_sesudah_istirahat')
+                                                                <span class="badge badge-primary">Izin Sebelum atau Sesudah Istirahat</span>
+                                                            @elseif($timeOff->type == 'cuti_umroh')
+                                                                <span class="badge badge-info">Cuti Umroh</span>
+                                                            @elseif($timeOff->type == 'cuti_haji')
+                                                                <span class="badge badge-info">Cuti Haji</span>
+                                                            @elseif($timeOff->type == 'dinas_dalam_kota')
+                                                                <span class="badge badge-secondary">Dinas Dalam Kota</span>
+                                                            @elseif($timeOff->type == 'dinas_luar_kota')
+                                                                <span class="badge badge-secondary">Dinas Luar Kota</span>
+                                                            @elseif($timeOff->type == 'izin_tidak_masuk')
+                                                                <span class="badge badge-warning">Izin Tidak Masuk</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_12_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit 12 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_4_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit 4 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_8_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit 8 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_berkepanjangan_diatas_12_bulan_pertama')
+                                                                <span class="badge badge-danger">Sakit Diatas 12 Bulan Pertama</span>
+                                                            @elseif($timeOff->type == 'sakit_dengan_surat_dokter')
+                                                                <span class="badge badge-danger">Sakit dengan Surat Dokter</span>
+                                                            @elseif($timeOff->type == 'sakit_tanpa_surat_dokter')
+                                                                <span class="badge badge-danger">Sakit tanpa Surat Dokter</span>
+                                                            @elseif($timeOff->type == 'cuti_menikah')
+                                                                <span class="badge badge-success">Cuti Menikah</span>
+                                                            @elseif($timeOff->type == 'cuti_menikahkan_anak')
+                                                                <span class="badge badge-success">Cuti Menikahkan Anak</span>
+                                                            @elseif($timeOff->type == 'cuti_khitanan_anak')
+                                                                <span class="badge badge-success">Cuti Khitanan Anak</span>
+                                                            @elseif($timeOff->type == 'cuti_istri_melahirkan_atau_keguguran')
+                                                                <span class="badge badge-success">Cuti Istri Melahirkan atau Keguguran</span>
+                                                            @elseif($timeOff->type == 'cuti_keluarga_meninggal')
+                                                                <span class="badge badge-dark">Cuti Keluarga Meninggal</span>
+                                                            @elseif($timeOff->type == 'cuti_anggota_keluarga_dalam_satu_rumah_meninggal')
+                                                                <span class="badge badge-dark">Cuti Anggota Keluarga Dalam Satu Rumah Meninggal</span>
                                                             @endif
                                                         </td>
                                                         <td>{{ \Carbon\Carbon::parse($timeOff->start_date)->format('d M Y') }}</td>
