@@ -1,9 +1,17 @@
 <footer class="main-footer">
     <div class="footer-left">
-        Copyright &copy; 2025 <div class="bullet"></div> Design By <a href="#">Muhammad
-            Andhika Rahmani</a>
+        <div class="d-flex align-items-center">
+            <div>
+                <strong>Attendify</strong> &copy; 2025
+            </div>
+            <div class="ml-3">
+                <a href="#" class="text-muted mx-1"><i class="fab fa-github"></i></a>
+                <a href="#" class="text-muted mx-1"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-muted mx-1"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
     </div>
     <div class="footer-right">
-        2.3.0
+        <span class="text-muted">v3.0.1</span>
     </div>
 </footer>
