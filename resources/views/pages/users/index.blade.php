@@ -1,4 +1,3 @@
-<!-- INDEX PAGE (index.blade.php) -->
 @extends('layouts.app')
 
 @section('title', 'Users Management')
@@ -57,38 +56,56 @@
             margin: 0;
         }
 
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            position: relative;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
         .table {
             width: 100%;
             margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        .table th {
+            position: sticky;
+            top: 0;
+            background-color: #fff;
+            z-index: 10;
+            padding: 15px 20px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+
+        .table td {
+            padding: 15px 20px;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table tr:last-child td {
+            border-bottom: none;
         }
 
         .table-striped tbody tr:nth-of-type(odd) {
             background-color: rgba(0, 0, 0, 0.02);
         }
 
-        .table th {
-            border-top: none;
-            color: var(--text-secondary);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.025em;
-            padding: 12px 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .table td {
-            padding: 12px 15px;
-            vertical-align: middle;
-            color: var(--text-main);
-            border-top: 1px solid var(--border-color);
-        }
-
+        /* Card and Button Styles */
         .btn {
             border-radius: 6px;
             font-weight: 500;
             font-size: 0.875rem;
-            padding: 0.375rem 0.75rem;
+            padding: 0.5rem 1rem;
             transition: all 0.2s;
         }
 
@@ -119,78 +136,49 @@
             border-color: var(--danger-color);
         }
 
-        .pagination {
-            margin-bottom: 0;
-        }
-
-        .page-link {
-            color: var(--primary-color);
-            border-color: var(--border-color);
-        }
-
-        .page-item.active .page-link {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .input-group .form-control {
-            border-radius: 6px 0 0 6px;
-            border-color: var(--border-color);
-        }
-
-        .input-group-append .btn {
-            border-radius: 0 6px 6px 0;
-        }
-
-        .search-input {
-            height: 38px;
-            box-shadow: none;
-        }
-
+        /* User Card Styles */
         .user-avatar {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background-color: var(--primary-color);
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 600;
-            margin-right: 10px;
+            margin-right: 12px;
         }
 
-        .user-position {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 20px;
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .user-department {
             font-size: 0.75rem;
-            font-weight: 500;
-            background-color: rgba(99, 102, 241, 0.1);
-            color: var(--primary-color);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 0;
-        }
-
-        .empty-state i {
-            font-size: 3rem;
             color: var(--text-secondary);
-            margin-bottom: 1rem;
         }
 
-        .breadcrumb-item + .breadcrumb-item::before {
-            content: "•";
-        }
-
+        /* Status Badge Styles */
         .status-badge {
             padding: 0.25em 0.6em;
             font-size: 0.75rem;
             font-weight: 500;
             border-radius: 20px;
+            display: inline-block;
         }
 
         .status-badge.admin {
@@ -208,103 +196,43 @@
             color: var(--success-color);
         }
 
-        .animate-hover {
-            transition: all 0.2s;
-        }
-
-        .animate-hover:hover {
-            transform: translateY(-2px);
-        }
-
-        .floating-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 999;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .floating-btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Time Off Balance Styles */
+        /* Leave Balance Styles - Simplified */
         .leave-balance {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+            width: 200px;
         }
 
-        .leave-type {
+        .leave-info {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 0.75rem;
+            margin-bottom: 5px;
         }
 
         .leave-label {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .leave-icon {
-            width: 18px;
-            height: 18px;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-        }
-
-        .leave-icon.annual {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: var(--success-color);
-        }
-
-        .leave-icon.sick {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: var(--danger-color);
-        }
-
-        .leave-icon.unpaid {
-            background-color: rgba(245, 158, 11, 0.1);
-            color: var(--warning-color);
+            font-size: 0.8rem;
+            color: var(--text-main);
+            font-weight: 500;
         }
 
         .leave-value {
+            font-size: 0.8rem;
             font-weight: 600;
         }
 
         .leave-progress {
-            height: 4px;
+            height: 6px;
             background-color: #e2e8f0;
-            border-radius: 2px;
+            border-radius: 3px;
             overflow: hidden;
-            margin-top: 2px;
         }
 
         .leave-progress-bar {
             height: 100%;
-            border-radius: 2px;
+            border-radius: 3px;
         }
 
-        .leave-progress-bar.annual {
+        .leave-progress-bar.good {
             background-color: var(--success-color);
-        }
-
-        .leave-progress-bar.sick {
-            background-color: var(--danger-color);
         }
 
         .leave-progress-bar.warning {
@@ -315,48 +243,149 @@
             background-color: var(--danger-color);
         }
 
-        .leave-tooltip {
+        .leave-details {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .action-btn {
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 4px;
+        }
+
+        /* Search and Filters */
+        .filters-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-container {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-input {
+            height: 38px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            padding: 0 15px;
+            width: 100%;
+        }
+
+        .filter-dropdown {
+            height: 38px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            padding: 0 15px;
+            background-color: #fff;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .card-header form {
+                width: 100%;
+                margin-top: 15px;
+            }
+
+            .filters-container {
+                flex-direction: column;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+            }
+        }
+
+        /* Tooltip */
+        .tooltip {
             position: relative;
+            display: inline-block;
             cursor: pointer;
         }
 
-        .leave-tooltip:hover .leave-tooltip-content {
-            display: block;
-        }
-
-        .leave-tooltip-content {
-            display: none;
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #1e293b;
-            color: white;
-            padding: 8px 12px;
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: left;
             border-radius: 6px;
-            font-size: 0.7rem;
-            white-space: nowrap;
-            z-index: 10;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 5px;
-        }
-
-        .leave-tooltip-content::after {
-            content: '';
+            padding: 8px 12px;
             position: absolute;
-            top: 100%;
+            z-index: 1;
+            bottom: 125%;
             left: 50%;
             transform: translateX(-50%);
-            border-width: 5px;
-            border-style: solid;
-            border-color: #1e293b transparent transparent transparent;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.75rem;
+            line-height: 1.4;
         }
 
-        @media (max-width: 768px) {
-            .responsive-table {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Column widths */
+        .col-user {
+            min-width: 200px;
+        }
+
+        .col-contact {
+            min-width: 180px;
+        }
+
+        .col-position {
+            min-width: 120px;
+        }
+
+        .col-role {
+            min-width: 100px;
+        }
+
+        .col-leave {
+            min-width: 220px;
+        }
+
+        .col-created {
+            min-width: 120px;
+        }
+
+        .col-actions {
+            min-width: 160px;
         }
     </style>
 @endpush
@@ -390,41 +419,55 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h4>All Users</h4>
-                                <form method="GET" action="{{ route('users.index') }}">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control search-input" placeholder="Search by name..." name="name">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary"><i class="fas fa-search"></i></button>
-                                        </div>
+
+                                <div class="filters-container">
+                                    <div class="search-container">
+                                        <form method="GET" action="{{ route('users.index') }}">
+                                            <input type="text" class="search-input" placeholder="Search by name or email..." name="search" value="{{ request('search') }}">
+                                        </form>
                                     </div>
-                                </form>
+
+                                    <select class="filter-dropdown">
+                                        <option value="">All Roles</option>
+                                        <option value="admin">Admin</option>
+                                        <option value="supervisor">Supervisor</option>
+                                        <option value="staff">Staff</option>
+                                    </select>
+
+                                    <select class="filter-dropdown">
+                                        <option value="">All Departments</option>
+                                        <option value="engineering">Engineering</option>
+                                        <option value="marketing">Marketing</option>
+                                        <option value="hr">HR</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <div class="card-body p-0">
-                                <div class="responsive-table">
-                                    <table class="table table-striped">
+                                <div class="table-container">
+                                    <table class="table">
                                         <thead>
                                             <tr>
-                                                <th>User</th>
-                                                <th>Contact Info</th>
-                                                <th>Position</th>
-                                                <th>Role</th>
-                                                <th>Time Off Balance</th>
-                                                <th>Created</th>
-                                                <th class="text-center">Actions</th>
+                                                <th class="col-user">User</th>
+                                                <th class="col-contact">Contact Info</th>
+                                                <th class="col-position">Position</th>
+                                                <th class="col-role">Role</th>
+                                                <th class="col-leave">Time Off Balance</th>
+                                                <th class="col-created">Created</th>
+                                                <th class="col-actions text-center">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @forelse ($users as $user)
-                                                <tr class="animate-hover">
+                                                <tr>
                                                     <td>
-                                                        <div class="d-flex align-items-center">
+                                                        <div class="user-info">
                                                             <div class="user-avatar">
                                                                 {{ substr($user->name, 0, 1) }}
                                                             </div>
-                                                            <div>
-                                                                <div class="font-weight-bold">{{ $user->name }}</div>
-                                                                <div class="text-muted small">{{ $user->department }}</div>
+                                                            <div class="user-details">
+                                                                <span class="user-name">{{ $user->name }}</span>
+                                                                <span class="user-department">{{ $user->department }}</span>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -433,48 +476,45 @@
                                                         <div class="text-muted small">{{ $user->phone ?? 'No phone' }}</div>
                                                     </td>
                                                     <td>
-                                                        <span class="user-position">{{ $user->position }}</span>
+                                                        <span class="status-badge staff">{{ $user->position }}</span>
                                                     </td>
                                                     <td>
                                                         <span class="status-badge {{ $user->role }}">{{ ucfirst($user->role) }}</span>
                                                     </td>
                                                     <td>
                                                         <div class="leave-balance">
-                                                            <div class="leave-type">
-                                                                <div class="leave-label leave-tooltip">
-                                                                    <div class="leave-icon annual">
-                                                                        <i class="fas fa-calendar-check"></i>
-                                                                    </div>
-                                                                    <span>Jatah Cuti</span>
-                                                                    <div class="leave-tooltip-content">
+                                                            <div class="leave-info">
+                                                                <span class="leave-label tooltip">
+                                                                    Jatah Cuti
+                                                                    <span class="tooltip-text">
                                                                         Jatah cuti 13 hari yang digunakan untuk:
                                                                         <br>- Cuti Tahunan
                                                                         <br>- Izin Tidak Masuk
                                                                         <br>- Sakit dengan Surat Dokter
                                                                         <br>- Sakit tanpa Surat Dokter
-                                                                    </div>
-                                                                </div>
-                                                                <div class="leave-value">
+                                                                    </span>
+                                                                </span>
+                                                                <span class="leave-value">
                                                                     {{ $user->leave_stats['leaveRemaining'] }} / {{ $user->leave_stats['totalAllowance'] }} hari
-                                                                </div>
+                                                                </span>
                                                             </div>
+
+                                                            @php
+                                                                $total = $user->leave_stats['totalAllowance'];
+                                                                $remaining = $user->leave_stats['leaveRemaining'];
+                                                                $percentage = $total > 0 ? ($remaining / $total) * 100 : 0;
+                                                                $colorClass = $percentage > 50 ? 'good' : ($percentage > 25 ? 'warning' : 'danger');
+                                                            @endphp
+
                                                             <div class="leave-progress">
-                                                                @php
-                                                                    $total = $user->leave_stats['totalAllowance'];
-                                                                    $remaining = $user->leave_stats['leaveRemaining'];
-                                                                    $percentage = $total > 0 ? ($remaining / $total) * 100 : 0;
-                                                                    $colorClass = $percentage > 50 ? 'annual' : ($percentage > 25 ? 'warning' : 'danger');
-                                                                @endphp
                                                                 <div class="leave-progress-bar {{ $colorClass }}" style="width: {{ $percentage }}%"></div>
                                                             </div>
 
                                                             @if($user->leave_stats['leaveUsed'] > 0)
-                                                                <div class="mt-2 text-muted" style="font-size: 0.7rem;">
-                                                                    <span class="font-weight-bold">Cuti terpakai: {{ $user->leave_stats['leaveUsed'] }} hari</span>
-
+                                                                <div class="leave-details">
+                                                                    <div><strong>Terpakai: {{ $user->leave_stats['leaveUsed'] }} hari</strong></div>
                                                                     @foreach($user->leave_stats['leaveTypes'] as $type => $days)
-                                                                        <br>
-                                                                        <span class="mr-1">
+                                                                        <div>
                                                                             @if($type == 'cuti_tahunan')
                                                                                 Cuti Tahunan:
                                                                             @elseif($type == 'izin_tidak_masuk')
@@ -487,7 +527,7 @@
                                                                                 {{ $type }}:
                                                                             @endif
                                                                             {{ $days }} hari
-                                                                        </span>
+                                                                        </div>
                                                                     @endforeach
                                                                 </div>
                                                             @endif
@@ -498,18 +538,15 @@
                                                         <div class="text-muted small">{{ $user->created_at->format('h:i A') }}</div>
                                                     </td>
                                                     <td>
-                                                        <div class="d-flex justify-content-center">
+                                                        <div class="action-buttons">
                                                             <a href='{{ route('users.edit', $user->id) }}'
-                                                                class="btn btn-sm btn-info btn-icon mr-1">
-                                                                <i class="fas fa-edit"></i>
-                                                                Edit
+                                                                class="btn btn-info action-btn">
+                                                                <i class="fas fa-edit"></i> Edit
                                                             </a>
-                                                            <form action="{{ route('users.destroy', $user->id) }}"
-                                                                method="POST">
-                                                                <input type="hidden" name="_method" value="DELETE" />
-                                                                <input type="hidden" name="_token"
-                                                                    value="{{ csrf_token() }}" />
-                                                                <button class="btn btn-sm btn-danger btn-icon confirm-delete">
+                                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button class="btn btn-danger action-btn confirm-delete">
                                                                     <i class="fas fa-trash"></i> Delete
                                                                 </button>
                                                             </form>
@@ -542,23 +579,32 @@
             </div>
         </section>
     </div>
-
-    <!-- Floating action button for mobile -->
-    <a href="{{ route('users.create') }}" class="floating-btn btn-primary d-md-none">
-        <i class="fas fa-plus"></i>
-    </a>
 @endsection
 
 @push('scripts')
-    <!-- JS Libraies -->
+    <!-- JS Libraries -->
     <script src="{{ asset('library/selectric/public/jquery.selectric.min.js') }}"></script>
-    <script src="{{ asset('js/page/features-posts.js') }}"></script>
     <script>
         // Confirm delete functionality
         $('.confirm-delete').click(function(e) {
             if (!confirm('Are you sure you want to delete this user?')) {
                 e.preventDefault();
             }
+        });
+
+        // Filter functionality
+        document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
+            dropdown.addEventListener('change', function() {
+                const searchParams = new URLSearchParams(window.location.search);
+
+                if (this.value) {
+                    searchParams.set(this.name || this.getAttribute('name') || 'filter', this.value);
+                } else {
+                    searchParams.delete(this.name || this.getAttribute('name') || 'filter');
+                }
+
+                window.location.search = searchParams.toString();
+            });
         });
     </script>
 @endpush
