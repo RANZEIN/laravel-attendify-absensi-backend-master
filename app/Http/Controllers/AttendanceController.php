@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class AttendanceController extends Controller
 {
-    // Index
+    // Tampilkan daftar kehadiran
     public function index(Request $request)
     {
         $attendances = Attendance::with('user')
@@ -19,56 +19,38 @@ class AttendanceController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(10);
 
-        return view('pages.absensi.index', compact('attendances'));
+        return view('pages.attendances.index', compact('attendances'));
     }
 
-    // Edit
+    // Tampilkan form edit
     public function edit($id)
     {
         $attendance = Attendance::findOrFail($id);
-        return view('pages.absensi.edit', compact('attendance'));
+        return view('pages.attendances.edit', compact('attendance'));
     }
 
-    // Update
+    // Simpan perubahan data kehadiran
     public function update(Request $request, $id)
     {
         $attendance = Attendance::findOrFail($id);
 
-        $request->validate([
-            'date' => 'required|date',
-            'time_in' => 'required',
-            'time_out' => 'required',
-            'latlon_in' => 'required',
-            'latlon_out' => 'required',
-        ]);
-
         $attendance->update([
-            'date' => $request->date,
             'time_in' => $request->time_in,
             'time_out' => $request->time_out,
             'latlon_in' => $request->latlon_in,
             'latlon_out' => $request->latlon_out,
+            'description' => $request->description,
         ]);
 
-        return redirect()->route('attendances.show', $id) // Pastikan ini ada di route
-            ->with('success', 'Attendance updated successfully');
+        return redirect()->route('attendances.index')->with('success', 'Data kehadiran berhasil diperbarui.');
     }
 
-    // Show
-    public function show($id)
-    {
-        $attendance = Attendance::findOrFail($id);
-        return view('pages.absensi.show', compact('attendance'));
-    }
-
-    // Destroy
+    // Hapus data kehadiran
     public function destroy($id)
     {
         $attendance = Attendance::findOrFail($id);
         $attendance->delete();
 
-        return redirect()->route('attendances.index')
-            ->with('success', 'Attendance deleted successfully');
+        return redirect()->route('attendances.index')->with('success', 'Data kehadiran berhasil dihapus.');
     }
-
 }

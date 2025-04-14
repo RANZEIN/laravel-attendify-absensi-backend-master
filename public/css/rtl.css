@@ -359,17 +359,6 @@ body.layout-2 .main-footer, body.layout-3 .main-footer {
   margin-right: auto;
 }
 
-.breadcrumb-item + .breadcrumb-item {
-  padding-right: 0.5rem;
-  padding-left: 0;
-}
-.breadcrumb-item + .breadcrumb-item::before {
-  padding-left: 0.5rem;
-  padding-right: 0;
-  display: inline-block;
-  color: #6c757d;
-  content: "»";
-}
 
 .section .section-title::before {
   float: right;
