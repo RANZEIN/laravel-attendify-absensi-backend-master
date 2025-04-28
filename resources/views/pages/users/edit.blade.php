@@ -183,7 +183,7 @@
         }
 
         .breadcrumb-item + .breadcrumb-item::before {
-            content: "•";
+            content: "/";
         }
 
         .form-footer {
@@ -273,7 +273,7 @@
                         <div class="breadcrumb-item">Edit User</div>
                     </div>
                 </div>
-                <a href="{{ route('users.index') }}" class="btn btn-light">
+                <a href="{{ route('users.index') }}" class="btn btn-primary">
                     <i class="fas fa-arrow-left mr-1"></i> Back to Users
                 </a>
             </div>
@@ -282,7 +282,7 @@
                 <div class="row">
                     <div class="col-12 col-lg-8 offset-lg-2">
                         <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
+
                                 <h4>Edit User Information</h4>
                                 <span class="last-login">Last updated: {{ $user->updated_at->diffForHumans() }}</span>
                             </div>

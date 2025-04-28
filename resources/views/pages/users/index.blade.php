@@ -397,13 +397,13 @@
                 <div>
                     <h1>Users Management</h1>
                     <div class="section-header-breadcrumb mt-1">
-                        <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
-                        <div class="breadcrumb-item"><a href="#">Users</a></div>
-                        <div class="breadcrumb-item">All Users</div>
+                        <div class="breadcrumb-item active"><a href="{{ route('home') }}">Dashboard</a></div>
+                        <div class="breadcrumb-item">Users Management</div>
                     </div>
                 </div>
                 <a href="{{ route('users.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Add New User
+                    {{-- <i class="fas fa-plus"> --}}
+                        </i> Create Users Profile
                 </a>
             </div>
 
@@ -541,13 +541,13 @@
                                                         <div class="action-buttons">
                                                             <a href='{{ route('users.edit', $user->id) }}'
                                                                 class="btn btn-info action-btn">
-                                                                <i class="fas fa-edit"></i> Edit
+                                                                <i class="fas fa-edit"></i>
                                                             </a>
                                                             <form action="{{ route('users.destroy', $user->id) }}" method="POST">
                                                                 @csrf
                                                                 @method('DELETE')
                                                                 <button class="btn btn-danger action-btn confirm-delete">
-                                                                    <i class="fas fa-trash"></i> Delete
+                                                                    <i class="fas fa-trash"></i>
                                                                 </button>
                                                             </form>
                                                         </div>

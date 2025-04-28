@@ -174,7 +174,7 @@
         }
 
         .breadcrumb-item + .breadcrumb-item::before {
-            content: "•";
+            content: "/";
         }
 
         .form-footer {
