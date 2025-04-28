@@ -8,6 +8,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\QrAbsenController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TimeOffController;
+use App\Http\Controllers\BroadcastController;
 
 Route::get('/', function () {
     return view('pages.auth.auth-login');
@@ -25,4 +26,8 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('time_offs', TimeOffController::class);
     Route::put('/time_offs/{id}/approve', [TimeOffController::class, 'approve'])->name('time_offs.approve');
     Route::put('/time_offs/{id}/reject', [TimeOffController::class, 'reject'])->name('time_offs.reject');
+
+    Route::resource('broadcasts', BroadcastController::class);
+    Route::post('broadcasts/{broadcast}/send', [BroadcastController::class, 'send'])->name('broadcasts.send');
 });
+
