@@ -3,13 +3,13 @@
     <aside id="sidebar-wrapper">
         <div class="sidebar-brand">
             <a href="{{ route('home') }}">
-                <img src="{{ asset('img/stisla-fill.svg') }}" alt="Attendify" width="30" class="mr-2">
-                ATTENDIFY
+                <img src="{{ asset('img/attendify-home.png') }}" alt="Attendify" width="80" class="mr-2">
+                {{-- ATTENDIFY --}}
             </a>
         </div>
         <div class="sidebar-brand sidebar-brand-sm">
             <a href="{{ route('home') }}">
-                <img src="{{ asset('img/stisla-fill.svg') }}" alt="Attendify" width="30">
+                <img src="{{ asset('img/attendify-home.png') }}" alt="Attendify" width="30">
             </a>
         </div>
 
@@ -46,10 +46,17 @@
                 </a>
             </li>
 
-            <li class="nav-item {{ Request::routeIs('permissions.*') ? 'active' : '' }}">
+            {{-- <li class="nav-item {{ Request::routeIs('permissions.*') ? 'active' : '' }}">
                 <a href="{{ route('permissions.index') }}" class="nav-link">
                     <i class="fas fa-key"></i>
                     <span>Permission</span>
+                </a>
+            </li> --}}
+
+            <li class="nav-item {{ Request::routeIs('broadcasts.*') ? 'active' : '' }}">
+                <a href="{{ route('broadcasts.index') }}" class="nav-link">
+                    <i class="fas fa-broadcast-tower"></i>
+                    <span>Broadcast</span>
                 </a>
             </li>
 
@@ -67,7 +74,7 @@
                 </a>
             </li>
 
-            <li class="menu-header">Reports</li>
+            {{-- <li class="menu-header">Reports</li>
             <li class="nav-item {{ Request::routeIs('analytics.*') ? 'active' : '' }}">
                 <a href="#" class="nav-link">
                     <i class="fas fa-chart-bar"></i>
@@ -79,15 +86,15 @@
                     <i class="fas fa-file-export"></i>
                     <span>Export Reports</span>
                 </a>
-            </li>
+            </li> --}}
 
             <li class="menu-header">Account</li>
-            <li class="nav-item {{ Request::routeIs('settings.*') ? 'active' : '' }}">
+            {{-- <li class="nav-item {{ Request::routeIs('settings.*') ? 'active' : '' }}">
                 <a href="#" class="nav-link">
                     <i class="fas fa-user-cog"></i>
                     <span>Settings</span>
                 </a>
-            </li>
+            </li> --}}
             <li class="nav-item">
                 <a href="#" class="nav-link text-danger" onclick="event.preventDefault(); document.getElementById('sidebar-logout-form').submit()">
                     <i class="fas fa-sign-out-alt"></i>
@@ -99,8 +106,8 @@
             </li>
         </ul>
 
-        <div class="sidebar-footer mt-5 p-3 text-center">
+        {{-- <div class="sidebar-footer mt-5 p-3 text-center">
             <div class="version text-muted">Version 2.3.0</div>
-        </div>
+        </div> --}}
     </aside>
 </div>
