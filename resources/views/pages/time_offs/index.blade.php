@@ -10,29 +10,16 @@
 @section('main')
     <div class="main-content">
         <section class="section">
-            <div class="section-header">
-                <h1>Time Off Requests</h1>
-                <div class="section-header-button">
-                    <a href="{{ route('time_offs.create') }}" class="btn btn-primary">Add New</a>
-                </div>
-                <div class="section-header-breadcrumb">
-                    <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
-                    <div class="breadcrumb-item"><a href="#">Time Off</a></div>
-                    <div class="breadcrumb-item">All Time Off Requests</div>
-                </div>
-            </div>
-            <div class="section-body">
-                <div class="row">
-                    <div class="col-12">
-                        @include('layouts.alert')
+            <div class="section-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h1>Time Off Request</h1>
+                    <div class="section-header-breadcrumb mt-1">
+                        <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
+                        <div class="breadcrumb-item">Time Off Request</div>
                     </div>
                 </div>
-                <h2 class="section-title">Time Off Requests</h2>
-                <p class="section-lead">
-                    You can manage all time off requests, such as editing, approving, rejecting and more.
-                </p>
-
-                <div class="row mt-4">
+            </div>
+                <div class="row">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
@@ -40,8 +27,8 @@
                                 <div class="card-header-form">
                                     <form method="GET" action="{{ route('time_offs.index') }}">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Search by name" name="name">
-                                            <div class="input-group-append">
+                                            <input type="text" class="form-control" placeholder="Search by title" name="search" value="{{ request('search') }}">
+                                            <div class="input-group-btn">
                                                 <button class="btn btn-primary"><i class="fas fa-search"></i></button>
                                             </div>
                                         </div>
@@ -243,12 +230,6 @@
                                                                     Detail
                                                                 </a>
 
-                                                                <a href='{{ route('time_offs.edit', $timeOff->id) }}'
-                                                                    class="btn btn-sm btn-primary btn-icon mr-1">
-                                                                    <i class="fas fa-edit"></i>
-                                                                    Edit
-                                                                </a>
-
                                                                 <form action="{{ route('time_offs.destroy', $timeOff->id) }}"
                                                                     method="POST" class="ml-1">
                                                                     <input type="hidden" name="_method" value="DELETE" />
@@ -285,7 +266,7 @@
                                                 @foreach ($approvedTimeOffs as $timeOff)
                                                     <tr>
                                                         <td>{{ $timeOff->user->name }}</td>
-                                                        <p>
+                                                        <td>
                                                             @if($timeOff->type == 'cuti_tahunan')
                                                                 <span class="badge badge-success">Cuti Tahunan</span>
                                                             @elseif($timeOff->type == 'izin_jam_kerja')
@@ -327,8 +308,7 @@
                                                             @elseif($timeOff->type == 'cuti_anggota_keluarga_dalam_satu_rumah_meninggal')
                                                                 <span class="badge badge-dark">Cuti Anggota Keluarga Dalam Satu Rumah Meninggal</span>
                                                             @endif
-                                                        </p>
-
+                                                        </td>
                                                         <td>{{ \Carbon\Carbon::parse($timeOff->start_date)->format('d M Y') }}</td>
                                                         <td>{{ \Carbon\Carbon::parse($timeOff->end_date)->format('d M Y') }}</td>
                                                         <td>{{ $timeOff->days }}</td>
