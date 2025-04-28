@@ -320,7 +320,7 @@
                                             <th>Check-out</th>
                                             <th>Location In</th>
                                             <th>Location Out</th>
-                                            <th>Status</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -353,13 +353,13 @@
                                                         @endif
                                                     </span>
                                                 </td>
-                                                <td>
+                                                {{-- <td>
                                                     @if($attendance->is_late)
                                                         <span class="badge badge-warning">Late</span>
                                                     @else
                                                         <span class="badge badge-success">On Time</span>
                                                     @endif
-                                                </td>
+                                                </td> --}}
                                             </tr>
                                         @endforeach
                                     </tbody>
