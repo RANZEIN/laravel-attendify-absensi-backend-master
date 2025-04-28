@@ -94,7 +94,7 @@
                     </div>
                 </div>
                 <a href="{{ route('broadcasts.create') }}" class="btn btn-primary">
-                    {{-- <i class="fas fa-plus"> --}}
+                    <i class="fas fa-plus-circle mr-1">
                         </i> New Broadcast
                 </a>
             </div>

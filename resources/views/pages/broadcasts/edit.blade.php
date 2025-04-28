@@ -142,8 +142,8 @@
                         <div class="breadcrumb-item">Edit Broadcast</div>
                     </div>
                 </div>
-                <a href="{{ route('broadcasts.index') }}" class="btn btn-light">
-                    <i class="fas fa-arrow-left mr-1"></i> Back to Broadcasts
+                <a href="{{ route('broadcasts.index') }}"  class="btn btn-primary">
+                   Back to Broadcasts
                 </a>
             </div>
 
