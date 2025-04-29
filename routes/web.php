@@ -9,6 +9,7 @@ use App\Http\Controllers\QrAbsenController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TimeOffController;
 use App\Http\Controllers\BroadcastController;
+use App\Http\Controllers\HolidayController;
 
 Route::get('/', function () {
     return view('pages.auth.auth-login');
@@ -29,5 +30,19 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('broadcasts', BroadcastController::class);
     Route::post('broadcasts/{broadcast}/send', [BroadcastController::class, 'send'])->name('broadcasts.send');
+
+    // Holiday management routes
+    Route::get('/holidays', [HolidayController::class, 'index'])->name('holidays.index');
+    Route::get('/holidays/calendar', [HolidayController::class, 'calendar'])->name('holidays.calendar');
+    Route::get('/holidays/create', [HolidayController::class, 'create'])->name('holidays.create');
+    Route::post('/holidays', [HolidayController::class, 'store'])->name('holidays.store');
+    Route::get('/holidays/{holiday}/edit', [HolidayController::class, 'edit'])->name('holidays.edit');
+    Route::put('/holidays/{holiday}', [HolidayController::class, 'update'])->name('holidays.update');
+    Route::delete('/holidays/{holiday}', [HolidayController::class, 'destroy'])->name('holidays.destroy');
+
+    // Special holiday management routes
+    Route::post('/holidays/generate-weekends', [HolidayController::class, 'generateWeekendHolidays'])->name('holidays.generate-weekends');
+    Route::post('/holidays/import-national', [HolidayController::class, 'importNationalHolidays'])->name('holidays.import-national');
+    Route::post('/holidays/toggle', [HolidayController::class, 'toggleHoliday'])->name('holidays.toggle');
 });
 

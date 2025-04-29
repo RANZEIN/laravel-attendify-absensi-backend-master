@@ -67,6 +67,13 @@
                 </a>
             </li>
 
+            <li class="nav-item {{ Request::routeIs('holidays.*') ? 'active' : '' }}">
+                <a href="{{ route('holidays.index') }}" class="nav-link">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>Holiday</span>
+                </a>
+            </li>
+
             <li class="nav-item {{ Request::routeIs('time_offs.*') ? 'active' : '' }}">
                 <a href="{{ route('time_offs.index') }}" class="nav-link">
                     <i class="fas fa-calendar-alt"></i>
