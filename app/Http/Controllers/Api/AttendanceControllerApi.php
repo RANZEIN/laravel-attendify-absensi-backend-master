@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Attendance;
+use App\Models\Holiday;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log; // Add this import
+use Illuminate\Support\Facades\Log;
 
 class AttendanceControllerApi extends Controller
 {
@@ -46,6 +47,15 @@ class AttendanceControllerApi extends Controller
             // Fallback to server time
             $date = date('Y-m-d');
             $time = date('H:i:s');
+        }
+
+        // Check if today is a holiday
+        $isHoliday = Holiday::isHoliday($date);
+        if ($isHoliday) {
+            return response([
+                'message' => 'Today is a holiday. No attendance required.',
+                'is_holiday' => true
+            ], 200);
         }
 
         //save new attendance
@@ -106,6 +116,15 @@ class AttendanceControllerApi extends Controller
             $time = date('H:i:s');
         }
 
+        // Check if today is a holiday
+        $isHoliday = Holiday::isHoliday($date);
+        if ($isHoliday) {
+            return response([
+                'message' => 'Today is a holiday. No attendance required.',
+                'is_holiday' => true
+            ], 200);
+        }
+
         //get today attendance
         $attendance = Attendance::where('user_id', $request->user()->id)
             ->where('date', $date)
@@ -136,9 +155,24 @@ class AttendanceControllerApi extends Controller
     //check is checkedin
     public function isCheckedin(Request $request)
     {
+        $date = date('Y-m-d');
+
+        // Check if today is a holiday
+        $isHoliday = Holiday::isHoliday($date);
+        if ($isHoliday) {
+            $holiday = Holiday::whereDate('date', $date)->first();
+            return response([
+                'checkedin' => false,
+                'checkedout' => false,
+                'is_holiday' => true,
+                'holiday_name' => $holiday ? $holiday->name : 'Holiday',
+                'holiday_type' => $holiday ? $holiday->type : 'unknown',
+            ], 200);
+        }
+
         //get today attendance
         $attendance = Attendance::where('user_id', $request->user()->id)
-            ->where('date', date('Y-m-d'))
+            ->where('date', $date)
             ->first();
 
         $isCheckout = $attendance ? $attendance->time_out : false;
@@ -146,6 +180,7 @@ class AttendanceControllerApi extends Controller
         return response([
             'checkedin' => $attendance ? true : false,
             'checkedout' => $isCheckout ? true : false,
+            'is_holiday' => false,
         ], 200);
     }
 
@@ -194,6 +229,41 @@ class AttendanceControllerApi extends Controller
                 'timezone_offset' => $timeZoneOffset,
                 'server_time' => date('H:i:s'),
             ]
+        ], 200);
+    }
+
+    /**
+     * Get working days between two dates (excluding holidays)
+     */
+    public function getWorkingDays(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        $startDate = Carbon::parse($request->start_date);
+        $endDate = Carbon::parse($request->end_date);
+
+        $workingDays = [];
+        $currentDate = $startDate->copy();
+
+        while ($currentDate <= $endDate) {
+            // Check if the current date is a holiday
+            $isHoliday = Holiday::isHoliday($currentDate->format('Y-m-d'));
+
+            if (!$isHoliday) {
+                $workingDays[] = $currentDate->format('Y-m-d');
+            }
+
+            $currentDate->addDay();
+        }
+
+        return response([
+            'status' => 'Success',
+            'message' => 'Working days retrieved successfully',
+            'working_days' => $workingDays,
+            'count' => count($workingDays)
         ], 200);
     }
 }

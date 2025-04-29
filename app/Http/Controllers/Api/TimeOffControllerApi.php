@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TimeOff;
+use App\Models\Holiday;
+use Carbon\Carbon;
 
 class TimeOffControllerApi extends Controller
 {
@@ -50,20 +52,42 @@ class TimeOffControllerApi extends Controller
             'document_url' => 'nullable|string',
         ]);
 
-        $days = (new \DateTime($validated['start_date']))->diff(new \DateTime($validated['end_date']))->days + 1;
+        // Calculate working days (excluding holidays)
+        $startDate = Carbon::parse($validated['start_date']);
+        $endDate = Carbon::parse($validated['end_date']);
+
+        $workingDays = 0;
+        $currentDate = $startDate->copy();
+
+        while ($currentDate <= $endDate) {
+            // Check if the current date is a holiday
+            $isHoliday = Holiday::isHoliday($currentDate->format('Y-m-d'));
+
+            if (!$isHoliday) {
+                $workingDays++;
+            }
+
+            $currentDate->addDay();
+        }
 
         $timeOff = TimeOff::create([
             'user_id' => $validated['user_id'],
             'type' => $validated['type'],
             'start_date' => $validated['start_date'],
             'end_date' => $validated['end_date'],
-            'days' => $days,
+            'days' => $workingDays, // Use working days instead of calendar days
             'reason' => $validated['reason'],
             'document_url' => $validated['document_url'] ?? null,
             'status' => 'pending',
         ]);
 
-        return response()->json($timeOff, 201);
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Time off request created successfully',
+            'data' => $timeOff,
+            'working_days' => $workingDays,
+            'calendar_days' => $endDate->diffInDays($startDate) + 1
+        ], 201);
     }
 
     /**
@@ -79,7 +103,11 @@ class TimeOffControllerApi extends Controller
         $timeOff->status = $validated['status'];
         $timeOff->save();
 
-        return response()->json($timeOff);
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Time off status updated successfully',
+            'data' => $timeOff
+        ]);
     }
 
     /**
@@ -88,7 +116,11 @@ class TimeOffControllerApi extends Controller
     public function show($id)
     {
         $timeOff = TimeOff::findOrFail($id);
-        return response()->json($timeOff);
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Time off details retrieved successfully',
+            'data' => $timeOff
+        ]);
     }
 
     /**
@@ -99,6 +131,66 @@ class TimeOffControllerApi extends Controller
         $timeOff = TimeOff::findOrFail($id);
         $timeOff->delete();
 
-        return response()->json(['message' => 'Time off deleted successfully']);
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Time off deleted successfully'
+        ]);
+    }
+
+    /**
+     * Get time off requests for a specific user.
+     */
+    public function getUserTimeOffs(Request $request, $userId)
+    {
+        $timeOffs = TimeOff::where('user_id', $userId)->get();
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'User time offs retrieved successfully',
+            'data' => $timeOffs
+        ]);
+    }
+
+    /**
+     * Calculate working days between two dates (excluding holidays).
+     */
+    public function calculateWorkingDays(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        $startDate = Carbon::parse($request->start_date);
+        $endDate = Carbon::parse($request->end_date);
+
+        $workingDays = 0;
+        $holidays = [];
+        $currentDate = $startDate->copy();
+
+        while ($currentDate <= $endDate) {
+            // Check if the current date is a holiday
+            $holiday = Holiday::whereDate('date', $currentDate->format('Y-m-d'))->first();
+
+            if ($holiday) {
+                $holidays[] = [
+                    'date' => $currentDate->format('Y-m-d'),
+                    'name' => $holiday->name,
+                    'type' => $holiday->type
+                ];
+            } else {
+                $workingDays++;
+            }
+
+            $currentDate->addDay();
+        }
+
+        return response()->json([
+            'status' => 'Success',
+            'message' => 'Working days calculated successfully',
+            'working_days' => $workingDays,
+            'calendar_days' => $endDate->diffInDays($startDate) + 1,
+            'holidays' => $holidays
+        ]);
     }
 }
