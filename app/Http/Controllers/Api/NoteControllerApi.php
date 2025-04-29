@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Note;
 
-class NoteController extends Controller
+class NoteControllerApi extends Controller
 {
     //index
     public function index(Request $request)

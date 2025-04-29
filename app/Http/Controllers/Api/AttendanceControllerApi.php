@@ -8,7 +8,7 @@ use App\Models\Attendance;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log; // Add this import
 
-class AttendanceController extends Controller
+class AttendanceControllerApi extends Controller
 {
     //checkin
     public function checkin(Request $request)

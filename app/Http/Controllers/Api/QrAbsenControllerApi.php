@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\QrAbsen;
 
-class QrAbsenController extends Controller
+class QrAbsenControllerApi extends Controller
 {
     public function checkQR(Request $request)
     {

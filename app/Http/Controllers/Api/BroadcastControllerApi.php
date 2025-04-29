@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
-class BroadcastController extends Controller
+class BroadcastControllerApi extends Controller
 {
     public function getBroadcasts(Request $request)
     {

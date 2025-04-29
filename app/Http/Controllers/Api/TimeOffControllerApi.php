@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TimeOff;
 
-class TimeOffController extends Controller
+class TimeOffControllerApi extends Controller
 {
     /**
      * Display a listing of the time-off requests.

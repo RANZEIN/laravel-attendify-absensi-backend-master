@@ -1,4 +1,4 @@
-<div class="table-responsive">
+<!-- <div class="table-responsive">
     <table id="timeOffTable" class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -72,4 +72,4 @@
             @endforelse
         </tbody>
     </table>
-</div>
+</div> -->

@@ -294,7 +294,7 @@
                                 <div class="card-header-form">
                                     <form method="GET" action="{{ route('attendances.index') }}">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Search by title" name="search" value="{{ request('search') }}">
+                                            <input type="text" class="form-control" placeholder="Search" name="search" value="{{ request('search') }}">
                                             <div class="input-group-btn">
                                                 <button class="btn btn-primary"><i class="fas fa-search"></i></button>
                                             </div>

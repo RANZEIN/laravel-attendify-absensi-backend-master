@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Company;
 
-class CompanyController extends Controller
+class CompanyControllerApi extends Controller
 {
     //show
     public function show()

@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 
-class UserController extends Controller
+class UserControllerApi extends Controller
 {
     //get by user id
     public function getUserId($id)

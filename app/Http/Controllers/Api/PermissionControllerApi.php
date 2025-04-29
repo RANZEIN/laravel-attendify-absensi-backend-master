@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Permission;
 
-class PermissionController extends Controller
+class PermissionControllerApi extends Controller
 {
     //create
     public function store(Request $request)

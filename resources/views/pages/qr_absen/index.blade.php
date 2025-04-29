@@ -191,7 +191,7 @@
                                 <div class="card-header-form">
                                     <form method="GET" action="{{ route('qr_absens.index') }}">
                                         <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Search by date" name="search" value="{{ request('search') }}">
+                                            <input type="text" class="form-control" placeholder="Search" name="search" value="{{ request('search') }}">
                                             <div class="input-group-btn">
                                                 <button class="btn btn-primary"><i class="fas fa-search"></i></button>
                                             </div>
