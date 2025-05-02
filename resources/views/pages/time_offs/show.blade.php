@@ -9,9 +9,10 @@
 @endpush
 
 @section('main')
-    <div class="main-content">
-        <section class="section">
-            <div class="section-header">
+<div class="main-content">
+    <section class="section">
+        <div class="section-header d-flex justify-content-between align-items-center">
+            <div>
                 <h1>Time Off Request Detail</h1>
                 <div class="section-header-breadcrumb">
                     <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
@@ -19,11 +20,12 @@
                     <div class="breadcrumb-item">Time Off Request Detail</div>
                 </div>
             </div>
-            <div class="section-body">
-                <h2 class="section-title">Time Off Request Detail</h2>
-                <p class="section-lead">
-                    Information about employee time off request.
-                </p>
+                {{-- <a href="{{ route('time_offs.index') }}" class="btn btn-primary">
+                    <i class="fas fa-arrow-left mr-1">
+                        </i> Back to Time Off
+                </a> --}}
+            </div>
+        <div>
 
                 <div class="row mt-sm-4">
                     <div class="col-12 col-md-12 col-lg-12">
@@ -198,13 +200,13 @@
                                     </div>
                                 </div>
                                 @else
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-md-12">
                                         <a href="{{ route('time_offs.index') }}" class="btn btn-primary">
                                             <i class="fas fa-arrow-left"></i> Back to List
                                         </a>
                                     </div>
-                                </div>
+                                </div> --}}
                                 @endif
                             </div>
                         </div>

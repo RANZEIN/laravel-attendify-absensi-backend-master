@@ -41,13 +41,18 @@
 @section('main')
     <div class="main-content">
         <section class="section">
-            <div class="section-header">
-                <h1>Create Time Off Request</h1>
-                <div class="section-header-breadcrumb">
-                    <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
-                    <div class="breadcrumb-item"><a href="{{ route('time_offs.index') }}">Time Offs</a></div>
-                    <div class="breadcrumb-item">Create Time Off Request</div>
+            <div class="section-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h1>Create Time Off Request</h1>
+                    <div class="section-header-breadcrumb mt-1">
+                        <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
+                        <div class="breadcrumb-item"><a href="{{ route('time_offs.index') }}">Time Offs</a></div>
+                        <div class="breadcrumb-item">Create Time Off Request</div>
+                    </div>
                 </div>
+                <a href="{{ route('time_offs.index') }}" class="btn btn-primary">
+                    <i class="fas fa-arrow-left mr-1"></i> Back to Time Off
+                </a>
             </div>
 
             <div class="section-body">
