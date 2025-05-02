@@ -2029,6 +2029,7 @@ h6 .badge {
 }
 .navbar .nav-link.nav-link-user img {
   width: 30px;
+  height: 30px;
 }
 .navbar .nav-link.nav-link-img {
   padding-top: 4px;
@@ -2410,7 +2411,7 @@ body {
   background-color: #f4f6f9;
   font-size: 14px;
   font-weight: 400;
-  font-family: "Nunito", "Segoe UI", arial;
+  /* font-family: "Nunito", "Segoe UI", arial; */
   color: #6c757d;
 }
 
@@ -2889,17 +2890,17 @@ pre {
   margin-top: -7px;
 }
 .section .section-header {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.03);
-  background-color: #fff;
-  border-radius: 3px;
-  border: none;
-  position: relative;
-  margin-bottom: 30px;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-}
+    /* background: linear-gradient(190deg, var(--secondary) 0%, var(--white) 20%); */
+    background-color: white;
+    border-radius: 8px; /* lebih halus dan umum */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 24px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    border: none;
+  }
 .section .section-header h1 {
   margin-bottom: 0;
   font-weight: 700;
@@ -3503,7 +3504,7 @@ body.layout-3 .main-footer {
 .main-content {
   padding-left: 280px;
   padding-right: 30px;
-  padding-top: 80px;
+  padding-top: 40px;
   width: 100%;
   position: relative;
 }
