@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Holiday;
+use App\Models\WeekendSetting;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -26,11 +27,10 @@ class HolidayController extends Controller
             $months[$i] = Carbon::createFromDate(null, $i, 1)->format('F');
         }
 
-        // Get years for dropdown (current year - 1 to current year + 2)
-        $currentYear = Carbon::now()->year;
-        $years = range($currentYear - 1, $currentYear + 2);
+        // Get weekend settings
+        $weekendSettings = WeekendSetting::first() ?: new WeekendSetting();
 
-        return view('pages.holidays.index', compact('holidays', 'months', 'years', 'year', 'month'));
+        return view('pages.holidays.index', compact('holidays', 'months', 'year', 'month', 'weekendSettings'));
     }
 
     /**
@@ -60,75 +60,10 @@ class HolidayController extends Controller
             $months[$i] = Carbon::createFromDate(null, $i, 1)->format('F');
         }
 
-        // Get years for dropdown (current year - 1 to current year + 2)
-        $currentYear = Carbon::now()->year;
-        $years = range($currentYear - 1, $currentYear + 2);
+        // Get weekend settings
+        $weekendSettings = WeekendSetting::first() ?: new WeekendSetting();
 
-        // Generate calendar data
-        $calendar = $this->generateCalendarData($year, $month, $holidayDates);
-
-        return view('pages.holidays.calendar', compact('calendar', 'months', 'years', 'year', 'month', 'holidayDates'));
-    }
-
-    /**
-     * Generate calendar data for the view.
-     */
-    private function generateCalendarData($year, $month, $holidayDates)
-    {
-        $date = Carbon::createFromDate($year, $month, 1);
-        $daysInMonth = $date->daysInMonth;
-        $firstDayOfMonth = $date->copy()->firstOfMonth()->dayOfWeek;
-
-        // Adjust for Sunday as first day of week (0)
-        $firstDayOfMonth = $firstDayOfMonth === 0 ? 7 : $firstDayOfMonth;
-
-        $calendar = [];
-        $day = 1;
-
-        // Create 6 weeks to ensure we have enough rows for all months
-        for ($i = 0; $i < 6; $i++) {
-            $week = [];
-
-            // 7 days in a week
-            for ($j = 1; $j <= 7; $j++) {
-                if (($i === 0 && $j < $firstDayOfMonth) || $day > $daysInMonth) {
-                    // Empty cell
-                    $week[] = [
-                        'day' => null,
-                        'isHoliday' => false,
-                        'holidayName' => null,
-                        'holidayType' => null,
-                        'date' => null
-                    ];
-                } else {
-                    $currentDate = Carbon::createFromDate($year, $month, $day)->format('Y-m-d');
-                    $isWeekend = in_array($j, [6, 7]); // Saturday (6) and Sunday (7)
-
-                    $isHoliday = isset($holidayDates[$currentDate]) || $isWeekend;
-                    $holidayName = isset($holidayDates[$currentDate]) ? $holidayDates[$currentDate]['name'] : ($isWeekend ? ($j === 6 ? 'Saturday' : 'Sunday') : null);
-                    $holidayType = isset($holidayDates[$currentDate]) ? $holidayDates[$currentDate]['type'] : ($isWeekend ? 'weekend' : null);
-
-                    $week[] = [
-                        'day' => $day,
-                        'isHoliday' => $isHoliday,
-                        'holidayName' => $holidayName,
-                        'holidayType' => $holidayType,
-                        'date' => $currentDate
-                    ];
-
-                    $day++;
-                }
-            }
-
-            $calendar[] = $week;
-
-            // If we've used all days in the month, break
-            if ($day > $daysInMonth) {
-                break;
-            }
-        }
-
-        return $calendar;
+        return view('pages.holidays.calendar', compact('months', 'year', 'month', 'holidayDates', 'weekendSettings'));
     }
 
     /**
@@ -171,10 +106,22 @@ class HolidayController extends Controller
     public function generateWeekendHolidays(Request $request)
     {
         $request->validate([
-            'year' => 'required|integer|min:2000|max:2100',
+            'year' => 'required|integer',
+            'weekend_days' => 'required|array',
+            'weekend_days.*' => 'integer|between:0,6',
         ]);
 
         $year = $request->year;
+        $weekendDays = $request->weekend_days;
+
+        // Update weekend settings
+        $weekendSettings = WeekendSetting::first();
+        if (!$weekendSettings) {
+            $weekendSettings = new WeekendSetting();
+        }
+        $weekendSettings->weekend_days = json_encode($weekendDays);
+        $weekendSettings->save();
+
         $startDate = Carbon::createFromDate($year, 1, 1);
         $endDate = Carbon::createFromDate($year, 12, 31);
 
@@ -182,8 +129,9 @@ class HolidayController extends Controller
         $currentDate = $startDate->copy();
 
         while ($currentDate <= $endDate) {
-            // Check if it's a weekend (Saturday or Sunday)
-            if ($currentDate->isWeekend()) {
+            // Check if the current day is in the selected weekend days
+            // Carbon: 0 (Sunday) to 6 (Saturday)
+            if (in_array($currentDate->dayOfWeek, $weekendDays)) {
                 // Check if a holiday already exists for this date
                 $existingHoliday = Holiday::whereDate('date', $currentDate->format('Y-m-d'))->first();
 
@@ -214,7 +162,7 @@ class HolidayController extends Controller
     public function importNationalHolidays(Request $request)
     {
         $request->validate([
-            'year' => 'required|integer|min:2000|max:2100',
+            'year' => 'required|integer',
         ]);
 
         $year = $request->year;
@@ -326,7 +274,12 @@ class HolidayController extends Controller
         } else {
             // If it's a working day, create a holiday
             $carbonDate = Carbon::parse($date);
-            $isWeekend = $carbonDate->isWeekend();
+
+            // Get weekend settings
+            $weekendSettings = WeekendSetting::first();
+            $weekendDays = $weekendSettings ? json_decode($weekendSettings->weekend_days) : [0, 6]; // Default to Sunday and Saturday
+
+            $isWeekend = in_array($carbonDate->dayOfWeek, $weekendDays);
 
             Holiday::create([
                 'name' => $isWeekend ? $carbonDate->format('l') . ' Weekend' : 'Company Holiday',
@@ -345,5 +298,26 @@ class HolidayController extends Controller
         }
 
         return redirect()->back()->with('success', $message);
+    }
+
+    /**
+     * Update weekend settings.
+     */
+    public function updateWeekendSettings(Request $request)
+    {
+        $request->validate([
+            'weekend_days' => 'required|array',
+            'weekend_days.*' => 'integer|between:0,6',
+        ]);
+
+        $weekendSettings = WeekendSetting::first();
+        if (!$weekendSettings) {
+            $weekendSettings = new WeekendSetting();
+        }
+
+        $weekendSettings->weekend_days = json_encode($request->weekend_days);
+        $weekendSettings->save();
+
+        return redirect()->back()->with('success', 'Weekend settings updated successfully.');
     }
 }

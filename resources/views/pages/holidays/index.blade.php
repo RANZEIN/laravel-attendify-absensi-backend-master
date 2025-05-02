@@ -5,11 +5,7 @@
 @push('style')
     <!-- CSS Libraries -->
     <link rel="stylesheet" href="{{ asset('library/bootstrap-daterangepicker/daterangepicker.css') }}">
-    <link rel="stylesheet" href="{{ asset('library/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('library/select2/dist/css/select2.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('library/selectric/public/selectric.css') }}">
-    <link rel="stylesheet" href="{{ asset('library/bootstrap-timepicker/css/bootstrap-timepicker.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('library/bootstrap-tagsinput/dist/bootstrap-tagsinput.css') }}">
     <style>
         :root {
             --primary-color: #6366f1;
@@ -77,43 +73,105 @@
         .tools-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 20px;
+            margin-bottom: 30px;
         }
 
         .tool-card {
             flex: 1;
-            min-width: 250px;
+            min-width: 300px;
             background-color: #fff;
-            border-radius: 8px;
+            border-radius: 12px;
             box-shadow: var(--card-shadow);
-            padding: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
         .tool-card h5 {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tool-card h5 i {
+            font-size: 1.2rem;
         }
 
         .tool-card p {
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             color: var(--text-secondary);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            line-height: 1.5;
         }
 
         .tool-form {
             display: flex;
-            gap: 10px;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tool-form .form-group {
+            margin-bottom: 0;
+        }
+
+        .tool-form label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--text-main);
         }
 
         .tool-form select,
         .tool-form input {
-            flex: 1;
             height: 38px;
             border-radius: 6px;
             border: 1px solid var(--border-color);
             padding: 0 15px;
+            width: 100%;
+        }
+
+        .tool-form .btn {
+            height: 38px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .weekend-days-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .weekend-day-checkbox {
+            display: none;
+        }
+
+        .weekend-day-label {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .weekend-day-checkbox:checked + .weekend-day-label {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
 
         .empty-state {
@@ -125,6 +183,70 @@
             font-size: 3rem;
             color: var(--text-secondary);
             margin-bottom: 1rem;
+        }
+
+        .select2-container--default .select2-selection--single {
+            height: 38px;
+            border-color: var(--border-color);
+            border-radius: 6px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 38px;
+            padding-left: 15px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 38px;
+        }
+
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: var(--primary-color);
+        }
+
+        .select2-container--default .select2-search--dropdown .select2-search__field {
+            border-color: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .select2-dropdown {
+            border-color: var(--border-color);
+            border-radius: 6px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-responsive {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table tbody td {
+            padding: 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(99, 102, 241, 0.05);
         }
     </style>
 @endpush
@@ -160,35 +282,70 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h4>Holiday Tools</h4>
+                            <div class="card-header">
+                                <h4><i class="fas fa-tools mr-2"></i> Holiday Tools</h4>
                             </div>
                             <div class="card-body">
                                 <div class="tools-container">
                                     <div class="tool-card">
-                                        <h5>Generate Weekend Holidays</h5>
-                                        <p>Automatically mark all Saturdays and Sundays as holidays for a specific year.</p>
+                                        <h5><i class="fas fa-calendar-week"></i> Generate Weekend Holidays</h5>
+                                        <p>Automatically mark selected days of the week as holidays for a specific year.</p>
                                         <form action="{{ route('holidays.generate-weekends') }}" method="POST" class="tool-form">
                                             @csrf
-                                            <select name="year" class="form-control">
-                                                @foreach($years as $y)
-                                                    <option value="{{ $y }}" {{ $y == $year ? 'selected' : '' }}>{{ $y }}</option>
-                                                @endforeach
-                                            </select>
-                                            <button type="submit" class="btn btn-primary">Generate</button>
+                                            <div class="form-group">
+                                                <label for="year">Select Year</label>
+                                                <input type="number" name="year" id="year" class="form-control" value="{{ date('Y') }}" min="1900" max="2100">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label>Select Weekend Days</label>
+                                                <div class="weekend-days-container">
+                                                    @php
+                                                        $weekendDays = isset($weekendSettings) && $weekendSettings->weekend_days
+                                                            ? json_decode($weekendSettings->weekend_days)
+                                                            : [0, 6]; // Default to Sunday and Saturday
+                                                    @endphp
+
+                                                    <input type="checkbox" name="weekend_days[]" value="0" id="sunday" class="weekend-day-checkbox" {{ in_array(0, $weekendDays) ? 'checked' : '' }}>
+                                                    <label for="sunday" class="weekend-day-label">Sunday</label>
+
+                                                    <input type="checkbox" name="weekend_days[]" value="1" id="monday" class="weekend-day-checkbox" {{ in_array(1, $weekendDays) ? 'checked' : '' }}>
+                                                    <label for="monday" class="weekend-day-label">Monday</label>
+
+                                                    <input type="checkbox" name="weekend_days[]" value="2" id="tuesday" class="weekend-day-checkbox" {{ in_array(2, $weekendDays) ? 'checked' : '' }}>
+                                                    <label for="tuesday" class="weekend-day-label">Tuesday</label>
+
+                                                    <input type="checkbox" name="weekend_days[]" value="3" id="wednesday" class="weekend-day-checkbox" {{ in_array(3, $weekendDays) ? 'checked' : '' }}>
+                                                    <label for="wednesday" class="weekend-day-label">Wednesday</label>
+
+                                                    <input type="checkbox" name="weekend_days[]" value="4" id="thursday" class="weekend-day-checkbox" {{ in_array(4, $weekendDays) ? 'checked' : '' }}>
+                                                    <label for="thursday" class="weekend-day-label">Thursday</label>
+
+                                                    <input type="checkbox" name="weekend_days[]" value="5" id="friday" class="weekend-day-checkbox" {{ in_array(5, $weekendDays) ? 'checked' : '' }}>
+                                                    <label for="friday" class="weekend-day-label">Friday</label>
+
+                                                    <input type="checkbox" name="weekend_days[]" value="6" id="saturday" class="weekend-day-checkbox" {{ in_array(6, $weekendDays) ? 'checked' : '' }}>
+                                                    <label for="saturday" class="weekend-day-label">Saturday</label>
+                                                </div>
+                                            </div>
+
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-magic mr-1"></i> Generate
+                                            </button>
                                         </form>
                                     </div>
                                     <div class="tool-card">
-                                        <h5>Import National Holidays</h5>
-                                        <p>Import Indonesian national holidays for a specific year.</p>
+                                        <h5><i class="fas fa-flag"></i> Import National Holidays</h5>
+                                        <p>Import Indonesian national holidays for any year. This will add common holidays like Independence Day, New Year, etc.</p>
                                         <form action="{{ route('holidays.import-national') }}" method="POST" class="tool-form">
                                             @csrf
-                                            <select name="year" class="form-control">
-                                                @foreach($years as $y)
-                                                    <option value="{{ $y }}" {{ $y == $year ? 'selected' : '' }}>{{ $y }}</option>
-                                                @endforeach
-                                            </select>
-                                            <button type="submit" class="btn btn-primary">Import</button>
+                                            <div class="form-group">
+                                                <label for="import-year">Select Year</label>
+                                                <input type="number" name="year" id="import-year" class="form-control" value="{{ date('Y') }}" min="1900" max="2100">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-download mr-1"></i> Import
+                                            </button>
                                         </form>
                                     </div>
                                 </div>
@@ -201,21 +358,27 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
-                                <h4>Holidays List</h4>
+                                <h4><i class="fas fa-list mr-2"></i> Holidays List</h4>
 
                                 <div class="filters-container">
                                     <form method="GET" action="{{ route('holidays.index') }}" class="d-flex gap-2">
-                                        <select name="month" class="filter-dropdown">
+                                        <select name="month" class="form-control select2">
                                             @foreach($months as $key => $monthName)
                                                 <option value="{{ $key }}" {{ $key == $month ? 'selected' : '' }}>{{ $monthName }}</option>
                                             @endforeach
                                         </select>
-                                        <select name="year" class="filter-dropdown">
-                                            @foreach($years as $y)
+                                        <select name="year" class="form-control select2">
+                                            @php
+                                                $currentYear = date('Y');
+                                                $yearRange = range($currentYear - 10, $currentYear + 10);
+                                            @endphp
+                                            @foreach($yearRange as $y)
                                                 <option value="{{ $y }}" {{ $y == $year ? 'selected' : '' }}>{{ $y }}</option>
                                             @endforeach
                                         </select>
-                                        <button type="submit" class="btn btn-primary">Filter</button>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-filter mr-1"></i> Filter
+                                        </button>
                                     </form>
                                 </div>
                             </div>
@@ -285,12 +448,18 @@
 @push('scripts')
     <!-- JS Libraries -->
     <script src="{{ asset('library/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ asset('library/select2/dist/js/select2.full.min.js') }}"></script>
     <script>
-        // Confirm delete functionality
-        $('.confirm-delete').click(function(e) {
-            if (!confirm('Are you sure you want to delete this holiday?')) {
-                e.preventDefault();
-            }
+        // Initialize Select2
+        $(document).ready(function() {
+            $('.select2').select2();
+
+            // Confirm delete functionality
+            $('.confirm-delete').click(function(e) {
+                if (!confirm('Are you sure you want to delete this holiday?')) {
+                    e.preventDefault();
+                }
+            });
         });
     </script>
 @endpush
