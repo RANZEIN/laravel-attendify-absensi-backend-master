@@ -273,9 +273,9 @@
                         <div class="breadcrumb-item">Edit User</div>
                     </div>
                 </div>
-                <a href="{{ route('users.index') }}" class="btn btn-primary">
+                {{-- <a href="{{ route('users.index') }}" class="btn btn-primary">
                     <i class="fas fa-arrow-left mr-1"></i> Back to Users
-                </a>
+                </a> --}}
             </div>
 
             <div class="section-body">

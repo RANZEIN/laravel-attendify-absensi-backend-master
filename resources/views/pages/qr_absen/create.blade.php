@@ -147,9 +147,9 @@
                         <div class="breadcrumb-item">Generate QR Absen</div>
                     </div>
                 </div>
-                <a href="{{ route('qr_absens.index') }}" class="btn btn-primary">
+                {{-- <a href="{{ route('qr_absens.index') }}" class="btn btn-primary">
                     <i class="fas fa-arrow-left mr-1"></i> Back to QR Absen
-                </a>
+                </a> --}}
             </div>
 
             <div class="section-body">
