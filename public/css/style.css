@@ -1623,6 +1623,7 @@ h6 .badge {
   box-shadow: 0 2px 6px #acb5f6;
   background-color: #6777ef;
   border-color: #6777ef;
+  /* margin-top: 1rem; */
 }
 .btn-primary:focus, .btn-primary.disabled:focus {
   background-color: #394eea !important;
@@ -2892,12 +2893,13 @@ pre {
 .section .section-header {
     /* background: linear-gradient(190deg, var(--secondary) 0%, var(--white) 20%); */
     background-color: white;
-    border-radius: 8px; /* lebih halus dan umum */
+    border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     padding: 24px;
     margin-bottom: 32px;
     display: flex;
     align-items: center;
+    align-content: start;
     position: relative;
     border: none;
   }
