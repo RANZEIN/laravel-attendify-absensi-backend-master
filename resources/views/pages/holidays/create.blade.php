@@ -10,43 +10,7 @@
     <link rel="stylesheet" href="{{ asset('library/selectric/public/selectric.css') }}">
     <link rel="stylesheet" href="{{ asset('library/bootstrap-timepicker/css/bootstrap-timepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('library/bootstrap-tagsinput/dist/bootstrap-tagsinput.css') }}">
-    <style>
-        :root {
-            --primary-color: #6366f1;
-            --primary-hover: #4f46e5;
-            --success-color: #10b981;
-            --info-color: #3b82f6;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --light-bg: #f8fafc;
-            --border-color: #e2e8f0;
-            --text-main: #1e293b;
-            --text-secondary: #64748b;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        .form-section {
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .form-section-title {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--text-main);
-        }
-
-        .form-footer {
-            display: flex;
-            justify-content: flex-end;
-            padding: 1rem 0;
-            margin-top: 1rem;
-            border-top: 1px solid var(--border-color);
-            gap: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/app-style.css') }}">
 @endpush
 
 @section('main')
@@ -68,7 +32,7 @@
                     <div class="col-12 col-lg-8 offset-lg-2">
                         <div class="card">
                             <div class="card-header">
-                                <h4>Holiday Information</h4>
+                                <h4><i class="fas fa-calendar-plus mr-2"></i>Holiday Information</h4>
                             </div>
                             <div class="card-body">
                                 <form action="{{ route('holidays.store') }}" method="POST">
@@ -109,9 +73,10 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="type">Holiday Type</label>
-                                                    <select id="type" name="type" class="form-control @error('type') is-invalid @enderror">
+                                                    <select id="type" name="type" class="form-control select2 @error('type') is-invalid @enderror">
                                                         <option value="national" {{ old('type') == 'national' ? 'selected' : '' }}>National Holiday</option>
                                                         <option value="company" {{ old('type') == 'company' ? 'selected' : '' }}>Company Holiday</option>
+                                                        <option value="weekend" {{ old('type') == 'weekend' ? 'selected' : '' }}>Weekend</option>
                                                     </select>
                                                     @error('type')
                                                         <div class="invalid-feedback">
@@ -135,7 +100,7 @@
 
                                         <div class="form-group">
                                             <label for="description">Description</label>
-                                            <textarea id="description" name="description" class="form-control" style="height: 100px;">{{ old('description') }}</textarea>
+                                            <textarea id="description" name="description" class="form-control" style="height: 100px;" placeholder="Enter holiday description">{{ old('description') }}</textarea>
                                         </div>
                                     </div>
 
@@ -158,14 +123,20 @@
 @push('scripts')
     <!-- JS Libraries -->
     <script src="{{ asset('library/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ asset('library/select2/dist/js/select2.full.min.js') }}"></script>
     <script>
-        // Initialize datepicker
-        $('.datepicker').daterangepicker({
-            singleDatePicker: true,
-            showDropdowns: true,
-            locale: {
-                format: 'YYYY-MM-DD'
-            }
+        $(document).ready(function() {
+            // Initialize Select2
+            $('.select2').select2();
+
+            // Initialize datepicker
+            $('.datepicker').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                locale: {
+                    format: 'YYYY-MM-DD'
+                }
+            });
         });
     </script>
 @endpush
