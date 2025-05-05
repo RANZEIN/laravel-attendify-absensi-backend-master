@@ -5,186 +5,7 @@
 @push('style')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.35.3/dist/apexcharts.min.css">
 <style>
-    :root {
-        --primary: #6366f1;
-        --primary-hover: #4f46e5;
-        --secondary: #2f3c7e;
-        --success: #10b981;
-        --info: #3b82f6;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --light: #f8fafc;
-        --dark: #0f172a;
-        --grey-light: #f1f5f9;
-        --grey: #e2e8f0;
-        --text-main: #1e293b;
-        --text-secondary: #64748b;
-        --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
-        --transition-speed: 0.3s;
-    }
 
-    /* Dashboard Layout */
-    .dashboard-container {
-        padding: 1.5rem;
-    }
-
-    .dashboard-header {
-        margin-bottom: 2rem;
-        background: white;
-        border-radius: 1rem;
-        box-shadow: var(--card-shadow);
-        padding: 1.5rem;
-        transition: all var(--transition-speed) ease;
-        position: relative;
-        overflow: hidden;
-        border: 1px solid rgba(0, 0, 0, 0.03);
-    }
-
-    .dashboard-title {
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: var(--text-main);
-        margin-bottom: 0.5rem;
-    }
-
-    .dashboard-subtitle {
-        color: var(--text-secondary);
-        font-size: 0.95rem;
-    }
-
-    /* Stats Cards */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .stat-card {
-        background: white;
-        border-radius: 1rem;
-        box-shadow: var(--card-shadow);
-        padding: 1.5rem;
-        transition: all var(--transition-speed) ease;
-        position: relative;
-        overflow: hidden;
-        border: 1px solid rgba(0, 0, 0, 0.03);
-    }
-
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    }
-
-    .stat-card::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: 0;
-        height: 100%;
-        width: 5px;
-        background: linear-gradient(to bottom, var(--primary), var(--primary-hover));
-        border-top-right-radius: 1rem;
-        border-bottom-right-radius: 1rem;
-    }
-
-    .stat-card.success::after {
-        background: linear-gradient(to bottom, var(--success), #059669);
-    }
-
-    .stat-card.warning::after {
-        background: linear-gradient(to bottom, var(--warning), #d97706);
-    }
-
-    .stat-card.danger::after {
-        background: linear-gradient(to bottom, var(--danger), #dc2626);
-    }
-
-    .stat-card.info::after {
-        background: linear-gradient(to bottom, var(--info), #2563eb);
-    }
-
-    .stat-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 1rem;
-    }
-
-    .stat-title {
-        font-size: 0.875rem;
-        color: var(--text-secondary);
-        font-weight: 500;
-    }
-
-    .stat-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.25rem;
-        color: white;
-        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-        box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
-        transition: all var(--transition-speed) ease;
-    }
-
-    .stat-card:hover .stat-icon {
-        transform: scale(1.1);
-    }
-
-    .stat-icon.success {
-        background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
-        box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
-    }
-
-    .stat-icon.warning {
-        background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
-        box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3);
-    }
-
-    .stat-icon.danger {
-        background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
-        box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
-    }
-
-    .stat-icon.info {
-        background: linear-gradient(135deg, var(--info) 0%, #2563eb 100%);
-        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
-    }
-
-    .stat-value {
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: var(--text-main);
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-change {
-        display: flex;
-        align-items: center;
-        font-size: 0.875rem;
-    }
-
-    .stat-change.positive {
-        color: var(--success);
-    }
-
-    .stat-change.negative {
-        color: var(--danger);
-    }
-
-    .stat-change i {
-        margin-right: 0.25rem;
-        font-size: 0.75rem;
-    }
-
-    .stat-change-text {
-        color: var(--text-secondary);
-        margin-left: 0.25rem;
-    }
 
     /* Chart Cards */
     .chart-grid {
@@ -620,27 +441,26 @@
 @endpush
 
 @section('main')
-<div class="main-content">
-    <div class="dashboard-container">
-        <!-- Dashboard Header -->
-        <div class="dashboard-header d-flex justify-content-between align-items-center">
-            <div>
-                <h1 class="dashboard-title">Dashboard</h1>
-                <p class="dashboard-subtitle">Welcome back, {{ auth()->user()->name }}!</p>
-            </div>
-            <div class="dropdown">
-                <button class="timeframe-selector dropdown-toggle" type="button" id="timeframeDropdown" data-toggle="dropdown">
-                    <i class="fas fa-calendar-alt"></i> Last 30 days</i>
-                </button>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="#">Today</a>
-                    <a class="dropdown-item" href="#">Last 7 days</a>
-                    <a class="dropdown-item" href="#">Last 30 days</a>
-                    <a class="dropdown-item" href="#">This month</a>
-                    <a class="dropdown-item" href="#">Custom range</a>
+    <div class="main-content">
+        <section class="section">
+            <div class="section-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p class="dashboard-subtitle">Welcome back, {{ auth()->user()->name }}!</p>
                 </div>
+                    <div class="dropdown">
+                        <button class="timeframe-selector dropdown-toggle" type="button" id="timeframeDropdown" data-toggle="dropdown">
+                            <i class="fas fa-calendar-alt"></i> Last 30 days</i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right">
+                            <a class="dropdown-item" href="#">Today</a>
+                            <a class="dropdown-item" href="#">Last 7 days</a>
+                            <a class="dropdown-item" href="#">Last 30 days</a>
+                            <a class="dropdown-item" href="#">This month</a>
+                            <a class="dropdown-item" href="#">Custom range</a>
+                        </div>
+                    </div>
             </div>
-        </div>
 
         <!-- Stats Cards -->
         <div class="stats-grid">
