@@ -10,255 +10,7 @@
     <link rel="stylesheet" href="{{ asset('library/selectric/public/selectric.css') }}">
     <link rel="stylesheet" href="{{ asset('library/bootstrap-timepicker/css/bootstrap-timepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('library/bootstrap-tagsinput/dist/bootstrap-tagsinput.css') }}">
-    <style>
-        :root {
-            --primary-color: #6366f1;
-            --primary-hover: #4f46e5;
-            --success-color: #10b981;
-            --info-color: #3b82f6;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --light-bg: #f8fafc;
-            --border-color: #e2e8f0;
-            --text-main: #1e293b;
-            --text-secondary: #64748b;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        body {
-            color: var(--text-main);
-            background-color: var(--light-bg);
-        }
-
-        .section-header {
-            padding: 20px 0;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .section-header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: var(--card-shadow);
-            margin-bottom: 1.5rem;
-            overflow: hidden;
-        }
-
-        .card-header {
-            background-color: #fff;
-            border-bottom: 1px solid var(--border-color);
-            padding: 15px 20px;
-        }
-
-        .card-header h4 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 0.5rem;
-        }
-
-        .form-control {
-            border-radius: 6px;
-            border-color: var(--border-color);
-            padding: 0.5rem 0.75rem;
-            height: calc(2.25rem + 6px);
-            font-size: 0.875rem;
-            transition: all 0.15s ease-in-out;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
-        }
-
-        .input-group-text {
-            border-radius: 6px 0 0 6px;
-            border-color: var(--border-color);
-            background-color: #f8fafc;
-        }
-
-        .selectgroup {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .selectgroup-item {
-            margin-bottom: 0;
-            margin-right: 0;
-        }
-
-        .selectgroup-button {
-            padding: 8px 16px;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            background-color: #fff;
-            transition: all 0.2s;
-            font-size: 14px;
-        }
-
-        .selectgroup-input:checked + .selectgroup-button {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            color: #fff;
-            z-index: 1;
-        }
-
-        .selectgroup-input:focus + .selectgroup-button {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
-        }
-
-        .invalid-feedback {
-            color: var(--danger-color);
-            font-size: 0.75rem;
-            margin-top: 0.25rem;
-        }
-
-        .form-control.is-invalid {
-            border-color: var(--danger-color);
-        }
-
-        .form-control.is-invalid:focus {
-            box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25);
-        }
-
-        .btn {
-            border-radius: 6px;
-            font-weight: 500;
-            font-size: 0.875rem;
-            padding: 0.5rem 1rem;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-            border-color: var(--primary-hover);
-        }
-
-        .btn-danger {
-            background-color: var(--danger-color);
-            border-color: var(--danger-color);
-        }
-
-        .btn-light {
-            background-color: #fff;
-            border-color: var(--border-color);
-        }
-
-        .btn-lg {
-            padding: 0.75rem 1.5rem;
-        }
-
-        .bg-light {
-            background-color: var(--light-bg) !important;
-        }
-
-        .form-section {
-            padding-bottom: 1rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .form-section-title {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--text-main);
-        }
-
-        .breadcrumb-item + .breadcrumb-item::before {
-            content: "/";
-        }
-
-        .form-footer {
-            display: flex;
-            justify-content: flex-end;
-            padding: 1rem 0;
-            margin-top: 1rem;
-            border-top: 1px solid var(--border-color);
-            gap: 10px;
-        }
-
-        .form-help-text {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-top: 0.25rem;
-        }
-
-        .user-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-
-        .password-info {
-            background-color: rgba(99, 102, 241, 0.05);
-            border-left: 3px solid var(--primary-color);
-            padding: 10px 15px;
-            border-radius: 0 6px 6px 0;
-            margin-top: 10px;
-            font-size: 0.8rem;
-        }
-
-        .profile-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .user-status {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            margin-left: 10px;
-        }
-
-        .user-status.admin {
-            background-color: rgba(99, 102, 241, 0.1);
-            color: var(--primary-color);
-        }
-
-        .user-status.supervisor {
-            background-color: rgba(245, 158, 11, 0.1);
-            color: var(--warning-color);
-        }
-
-        .user-status.staff {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: var(--success-color);
-        }
-
-        .last-login {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/app-style.css') }}">
 @endpush
 
 @section('main')
@@ -268,22 +20,22 @@
                 <div>
                     <h1>Edit User</h1>
                     <div class="section-header-breadcrumb mt-1">
-                        <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
+                        <div class="breadcrumb-item active"><a href="{{ route('home') }}">Dashboard</a></div>
                         <div class="breadcrumb-item"><a href="{{ route('users.index') }}">Users</a></div>
                         <div class="breadcrumb-item">Edit User</div>
                     </div>
                 </div>
-                {{-- <a href="{{ route('users.index') }}" class="btn btn-primary">
+                <a href="{{ route('users.index') }}" class="btn btn-light">
                     <i class="fas fa-arrow-left mr-1"></i> Back to Users
-                </a> --}}
+                </a>
             </div>
 
             <div class="section-body">
                 <div class="row">
                     <div class="col-12 col-lg-8 offset-lg-2">
                         <div class="card">
-
-                                <h4>Edit User Information</h4>
+                            <div class="card-header">
+                                <h4><i class="fas fa-user-edit mr-2"></i>Edit User Information</h4>
                                 <span class="last-login">Last updated: {{ $user->updated_at->diffForHumans() }}</span>
                             </div>
                             <div class="card-body">
@@ -391,9 +143,17 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="department">Department</label>
-                                                    <input type="text" id="department"
-                                                        class="form-control @error('department') is-invalid @enderror"
-                                                        name="department" value="{{ $user->department }}">
+                                                    <select id="department" name="department" class="form-control select2 @error('department') is-invalid @enderror">
+                                                        <option value="">Select Department</option>
+                                                        <option value="Engineering" {{ $user->department == 'Engineering' ? 'selected' : '' }}>Engineering</option>
+                                                        <option value="Marketing" {{ $user->department == 'Marketing' ? 'selected' : '' }}>Marketing</option>
+                                                        <option value="HR" {{ $user->department == 'HR' ? 'selected' : '' }}>HR</option>
+                                                        <option value="Finance" {{ $user->department == 'Finance' ? 'selected' : '' }}>Finance</option>
+                                                        <option value="Operations" {{ $user->department == 'Operations' ? 'selected' : '' }}>Operations</option>
+                                                        <option value="Sales" {{ $user->department == 'Sales' ? 'selected' : '' }}>Sales</option>
+                                                        <option value="Customer Support" {{ $user->department == 'Customer Support' ? 'selected' : '' }}>Customer Support</option>
+                                                        <option value="IT" {{ $user->department == 'IT' ? 'selected' : '' }}>IT</option>
+                                                    </select>
                                                     @error('department')
                                                         <div class="invalid-feedback">
                                                             {{ $message }}
@@ -427,6 +187,38 @@
                                                         <i class="fas fa-user mr-1"></i> Staff
                                                     </span>
                                                 </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-section">
+                                        <div class="form-section-title">Leave Allowance</div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="leave_allowance">Annual Leave Allowance (Days)</label>
+                                                    <input type="number" id="leave_allowance"
+                                                        class="form-control @error('leave_allowance') is-invalid @enderror"
+                                                        name="leave_allowance" value="{{ $user->leave_allowance ?? 12 }}" min="0" max="30">
+                                                    @error('leave_allowance')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="leave_period_start">Leave Period Start Date</label>
+                                                    <input type="text" id="leave_period_start"
+                                                        class="form-control datepicker @error('leave_period_start') is-invalid @enderror"
+                                                        name="leave_period_start" value="{{ $user->leave_period_start ?? now()->format('Y-m-d') }}">
+                                                    @error('leave_period_start')
+                                                        <div class="invalid-feedback">
+                                                            {{ $message }}
+                                                        </div>
+                                                    @enderror
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -472,21 +264,38 @@
 @endsection
 
 @push('scripts')
+    <!-- JS Libraries -->
+    <script src="{{ asset('library/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ asset('library/select2/dist/js/select2.full.min.js') }}"></script>
     <script>
-        // Toggle password visibility
-        document.querySelector('.toggle-password').addEventListener('click', function() {
-            const passwordInput = document.getElementById('password');
-            const icon = this.querySelector('i');
+        $(document).ready(function() {
+            // Initialize Select2
+            $('.select2').select2();
 
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
+            // Initialize datepicker
+            $('.datepicker').daterangepicker({
+                singleDatePicker: true,
+                showDropdowns: true,
+                locale: {
+                    format: 'YYYY-MM-DD'
+                }
+            });
+
+            // Toggle password visibility
+            document.querySelector('.toggle-password').addEventListener('click', function() {
+                const passwordInput = document.getElementById('password');
+                const icon = this.querySelector('i');
+
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
         });
     </script>
 @endpush
