@@ -6,36 +6,7 @@
     <!-- CSS Libraries -->
     <link rel="stylesheet" href="{{ asset('library/bootstrap-daterangepicker/daterangepicker.css') }}">
     <link rel="stylesheet" href="{{ asset('library/select2/dist/css/select2.min.css') }}">
-    <style>
-        .calendar-container {
-            margin-bottom: 20px;
-        }
-        .date-range-container {
-            display: flex;
-            gap: 15px;
-        }
-        .date-input {
-            flex: 1;
-        }
-        .manual-days-input {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            border: 1px solid #e9ecef;
-        }
-        .hidden {
-            display: none;
-        }
-        .alert-info {
-            background-color: #e3f2fd;
-            color: #0c63e4;
-            border-color: #b6d4fe;
-            padding: 10px 15px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/app-style.css') }}">
 @endpush
 
 @section('main')
@@ -50,9 +21,9 @@
                         <div class="breadcrumb-item">Create Time Off Request</div>
                     </div>
                 </div>
-                <a href="{{ route('time_offs.index') }}" class="btn btn-primary">
+                {{-- <a href="{{ route('time_offs.index') }}" class="btn btn-primary">
                     <i class="fas fa-arrow-left mr-1"></i> Back to Time Off
-                </a>
+                </a> --}}
             </div>
 
             <div class="section-body">

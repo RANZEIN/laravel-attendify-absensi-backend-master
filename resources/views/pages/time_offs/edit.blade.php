@@ -6,39 +6,7 @@
     <!-- CSS Libraries -->
     <link rel="stylesheet" href="{{ asset('library/bootstrap-daterangepicker/daterangepicker.css') }}">
     <link rel="stylesheet" href="{{ asset('library/select2/dist/css/select2.min.css') }}">
-    <style>
-        .calendar-container {
-            margin-bottom: 20px;
-        }
-        .date-range-container {
-            display: flex;
-            gap: 15px;
-        }
-        .date-input {
-            flex: 1;
-        }
-        .manual-days-input {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            border: 1px solid #e9ecef;
-        }
-        .hidden {
-            display: none;
-        }
-        .alert-info {
-            background-color: #e3f2fd;
-            color: #0c63e4;
-            border-color: #b6d4fe;
-            padding: 10px 15px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-        }
-        .document-preview {
-            margin-top: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/app-style.css') }}">
 @endpush
 
 @section('main')
@@ -79,7 +47,7 @@
                                     @method('PUT')
                                     <div class="form-group">
                                         <label for="user_id">Employee</label>
-                                        <select name="user_id" id="user_id" class="form-control select2 @error('user_id') is-invalid @enderror">
+                                        <select name="user_id" id="user_id" class="form-control @error('user_id') is-invalid @enderror">
                                             <option value="">Select Employee</option>
                                             @foreach ($users as $user)
                                                 <option value="{{ $user->id }}" {{ old('user_id', $timeOff->user_id) == $user->id ? 'selected' : '' }}>
@@ -96,7 +64,7 @@
 
                                     <div class="form-group">
                                         <label for="type">Time Off Type</label>
-                                        <select name="type" id="type" class="form-control select2 @error('type') is-invalid @enderror">
+                                        <select name="type" id="type" class="form-control @error('type') is-invalid @enderror">
                                             <option value="">Select Type</option>
                                             <option value="cuti_tahunan" {{ old('type', $timeOff->type) == 'cuti_tahunan' ? 'selected' : '' }}>Cuti Tahunan</option>
                                             <option value="izin_jam_kerja" {{ old('type', $timeOff->type) == 'izin_jam_kerja' ? 'selected' : '' }}>Izin Jam Kerja</option>

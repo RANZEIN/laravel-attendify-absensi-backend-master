@@ -2,320 +2,6 @@
 
 @section('title', 'Time Off Requests')
 
-@push('style')
-    <!-- CSS Libraries -->
-    <link rel="stylesheet" href="{{ asset('library/selectric/public/selectric.css') }}">
-    <style>
-        :root {
-            --primary-color: #6366f1;
-            --primary-hover: #4f46e5;
-            --success-color: #10b981;
-            --info-color: #3b82f6;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --light-bg: #f8fafc;
-            --border-color: #e2e8f0;
-            --text-main: #1e293b;
-            --text-secondary: #64748b;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        body {
-            color: var(--text-main);
-            background-color: var(--light-bg);
-        }
-
-        .section-header {
-            padding: 20px 0;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .section-header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: var(--card-shadow);
-            margin-bottom: 1.5rem;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        .card-header {
-            background-color: #fff;
-            border-bottom: 1px solid var(--border-color);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .card-header h4 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin: 0;
-            color: var(--text-main);
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        .card-footer {
-            background-color: #fff;
-            border-top: 1px solid var(--border-color);
-            padding: 15px 20px;
-        }
-
-        /* Table Styles */
-        .table-container {
-            overflow-x: auto;
-            margin: 0 -20px;
-        }
-
-        .table {
-            width: 100%;
-            margin-bottom: 0;
-        }
-
-        .table th {
-            padding: 12px 20px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-            border-bottom: 1px solid var(--border-color);
-            background-color: #f8fafc;
-        }
-
-        .table td {
-            padding: 15px 20px;
-            vertical-align: middle;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: rgba(0, 0, 0, 0.01);
-        }
-
-
-        /* Badge Styles */
-        .badge {
-            padding: 0.35em 0.65em;
-            font-size: 0.75rem;
-            font-weight: 500;
-            border-radius: 6px;
-            display: inline-block;
-        }
-
-        .badge-success {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: var(--success-color);
-        }
-
-        .badge-warning {
-            background-color: rgba(245, 158, 11, 0.1);
-            color: var(--warning-color);
-        }
-
-        .badge-danger {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: var(--danger-color);
-        }
-
-        .badge-info {
-            background-color: rgba(59, 130, 246, 0.1);
-            color: var(--info-color);
-        }
-
-        .badge-primary {
-            background-color: rgba(99, 102, 241, 0.1);
-            color: var(--primary-color);
-        }
-
-        .badge-secondary {
-            background-color: rgba(100, 116, 139, 0.1);
-            color: var(--text-secondary);
-        }
-
-        .badge-dark {
-            background-color: rgba(30, 41, 59, 0.1);
-            color: var(--text-main);
-        }
-
-        /* Tabs */
-        .nav-tabs {
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 1rem;
-            display: flex;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            -ms-overflow-style: -ms-autohiding-scrollbar;
-        }
-
-        .nav-tabs::-webkit-scrollbar {
-            display: none;
-        }
-
-        .nav-tabs .nav-item {
-            margin-bottom: -1px;
-            white-space: nowrap;
-        }
-
-        .nav-tabs .nav-link {
-            border: none;
-            border-bottom: 2px solid transparent;
-            border-radius: 0;
-            padding: 0.75rem 1rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-
-        .nav-tabs .nav-link:hover {
-            color: var(--green-color);
-            border-color: transparent;
-        }
-
-        .nav-tabs .nav-link.active {
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--primary-color);
-            background-color: transparent;
-        }
-
-        /* Action Buttons */
-        .d-flex {
-            display: flex !important;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        /* Pagination */
-        .pagination {
-            display: flex;
-            padding-left: 0;
-            list-style: none;
-            border-radius: 0.25rem;
-        }
-
-        .pagination .page-item:first-child .page-link {
-            border-top-left-radius: 8px;
-            border-bottom-left-radius: 8px;
-        }
-
-        .pagination .page-item:last-child .page-link {
-            border-top-right-radius: 8px;
-            border-bottom-right-radius: 8px;
-        }
-
-        .pagination .page-item.active .page-link {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            color: #fff;
-        }
-
-        .pagination .page-link {
-            padding: 0.5rem 0.75rem;
-            margin-left: -1px;
-            line-height: 1.25;
-            color: var(--primary-color);
-            background-color: #fff;
-            border: 1px solid var(--border-color);
-            transition: all 0.2s;
-        }
-
-        .pagination .page-link:hover {
-            background-color: #f8fafc;
-            border-color: var(--border-color);
-            color: var(--primary-hover);
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 2rem 0;
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .section-header .btn {
-                margin-top: 1rem;
-                align-self: flex-start;
-            }
-
-            .card-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .card-header-form {
-                width: 100%;
-                margin-top: 1rem;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            .action-buttons .btn {
-                width: 100%;
-            }
-
-            .nav-tabs {
-                justify-content: flex-start;
-            }
-
-            .nav-tabs .nav-link {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.875rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .table th, .table td {
-                padding: 10px 15px;
-            }
-
-            .section-header h1 {
-                font-size: 1.25rem;
-            }
-
-            .card-header h4 {
-                font-size: 1rem;
-            }
-        }
-    </style>
-@endpush
-
 @section('main')
     <div class="main-content">
         <section class="section">
@@ -327,8 +13,9 @@
                         <div class="breadcrumb-item">Time Off Requests</div>
                     </div>
                 </div>
-                <a href="{{ route('time_offs.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus-circle"></i> Create Time Off
+                <a href="{{ route('time_offs.create') }}" class="btn btn-primary-header">
+                    <i class="fas fa-plus-circle">
+                        </i> Create Time Off
                 </a>
             </div>
 
@@ -401,7 +88,7 @@
                                                             @if($timeOff->type == 'cuti_tahunan')
                                                                 <span class="badge badge-success">Cuti Tahunan</span>
                                                             @elseif($timeOff->type == 'izin_jam_kerja')
-                                                                <span class="badge badge-primary">Izin Jam Kerja</span>
+                                                                <span class="badge badge-success">Izin Jam Kerja</span>
                                                             @elseif($timeOff->type == 'izin_sebelum_atau_sesudah_istirahat')
                                                                 <span class="badge badge-primary">Izin Sebelum/Sesudah Istirahat</span>
                                                             @elseif($timeOff->type == 'cuti_umroh')
@@ -506,7 +193,7 @@
                                                             @if($timeOff->type == 'cuti_tahunan')
                                                                 <span class="badge badge-success">Cuti Tahunan</span>
                                                             @elseif($timeOff->type == 'izin_jam_kerja')
-                                                                <span class="badge badge-primary">Izin Jam Kerja</span>
+                                                                <span class="badge badge-success">Izin Jam Kerja</span>
                                                             @elseif($timeOff->type == 'izin_sebelum_atau_sesudah_istirahat')
                                                                 <span class="badge badge-primary">Izin Sebelum/Sesudah Istirahat</span>
                                                             @elseif($timeOff->type == 'cuti_umroh')
@@ -602,7 +289,7 @@
                                                             @if($timeOff->type == 'cuti_tahunan')
                                                                 <span class="badge badge-success">Cuti Tahunan</span>
                                                             @elseif($timeOff->type == 'izin_jam_kerja')
-                                                                <span class="badge badge-primary">Izin Jam Kerja</span>
+                                                                <span class="badge badge-success">Izin Jam Kerja</span>
                                                             @elseif($timeOff->type == 'izin_sebelum_atau_sesudah_istirahat')
                                                                 <span class="badge badge-primary">Izin Sebelum/Sesudah Istirahat</span>
                                                             @elseif($timeOff->type == 'cuti_umroh')
@@ -698,7 +385,7 @@
                                                             @if($timeOff->type == 'cuti_tahunan')
                                                                 <span class="badge badge-success">Cuti Tahunan</span>
                                                             @elseif($timeOff->type == 'izin_jam_kerja')
-                                                                <span class="badge badge-primary">Izin Jam Kerja</span>
+                                                                <span class="badge badge-success">Izin Jam Kerja</span>
                                                             @elseif($timeOff->type == 'izin_sebelum_atau_sesudah_istirahat')
                                                                 <span class="badge badge-primary">Izin Sebelum/Sesudah Istirahat</span>
                                                             @elseif($timeOff->type == 'cuti_umroh')
