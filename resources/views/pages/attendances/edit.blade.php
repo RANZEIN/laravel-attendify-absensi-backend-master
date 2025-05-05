@@ -142,12 +142,6 @@
                 </div>
             </div>
 
-            <div class="section-body">
-                <h2 class="section-title">Edit Attendance Record</h2>
-                <p class="section-lead">
-                    Update the attendance information for {{ $attendance->user->name }}.
-                </p>
-
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
