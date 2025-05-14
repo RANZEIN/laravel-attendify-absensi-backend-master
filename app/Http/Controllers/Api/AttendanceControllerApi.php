@@ -11,220 +11,166 @@ use Illuminate\Support\Facades\Log;
 
 class AttendanceControllerApi extends Controller
 {
-    //checkin
+    /**
+     * Handle user check-in
+     */
     public function checkin(Request $request)
     {
-        //validate lat and long
         $request->validate([
             'latitude' => 'required',
             'longitude' => 'required',
-            'time' => 'nullable',
-            'timeZoneOffset' => 'nullable',
+            'timeZoneOffset' => 'nullable|integer',
         ]);
 
-        // Determine the time to use
-        if ($request->has('time') && $request->has('timeZoneOffset')) {
-            // Use the client-provided time with time zone offset
-            $clientTime = $request->time;
-            $timeZoneOffset = (int)$request->timeZoneOffset;
+        $user = $request->user();
+        $date = date('Y-m-d');
+        $timeZoneOffset = (int)($request->timeZoneOffset ?? 0);
+        $clientNow = Carbon::now()->addHours($timeZoneOffset);
+        $clientTime = $clientNow->format('H:i:s');
 
-            // Create a Carbon instance from the client time
-            $timeFormat = strlen($clientTime) <= 5 ? 'H:i' : 'H:i:s';
-            $now = Carbon::createFromFormat($timeFormat, $clientTime);
+        Log::info("User {$user->id} check-in: Time {$clientTime}, Offset: {$timeZoneOffset}");
 
-            // Set the date to today
-            $now->setDate(date('Y'), date('m'), date('d'));
-
-            // Convert to UTC for storage
-            $now->subHours($timeZoneOffset);
-
-            $date = $now->format('Y-m-d');
-            $time = $now->format('H:i:s');
-
-            // Log for debugging
-            Log::info("Client check-in time: {$clientTime}, Offset: {$timeZoneOffset}, Stored time: {$time}");
-        } else {
-            // Fallback to server time
-            $date = date('Y-m-d');
-            $time = date('H:i:s');
-        }
-
-        // Check if today is a holiday
-        $isHoliday = Holiday::isHoliday($date);
-        if ($isHoliday) {
+        // Cek hari libur
+        if (Holiday::isHoliday($date)) {
             return response([
-                'message' => 'Today is a holiday. No attendance required.',
+                'message' => 'Hari ini libur, tidak perlu absen.',
                 'is_holiday' => true
             ], 200);
         }
 
-        //save new attendance
-        $attendance = new Attendance;
-        $attendance->user_id = $request->user()->id;
-        $attendance->date = $date;
-        $attendance->time_in = $time;
-        $attendance->latlon_in = $request->latitude . ',' . $request->longitude;
-        $attendance->save();
+        // Cek apakah sudah pernah checkin
+        $existing = Attendance::where('user_id', $user->id)->where('date', $date)->first();
+        if ($existing) {
+            return response([
+                'message' => 'Sudah melakukan check-in hari ini.',
+                'attendance' => $existing
+            ], 200);
+        }
+
+        // Simpan data check-in
+        $attendance = Attendance::create([
+            'user_id' => $user->id,
+            'date' => $date,
+            'time_in' => $clientTime,
+            'latlon_in' => $request->latitude . ',' . $request->longitude,
+        ]);
 
         return response([
-            'message' => 'Checkin success',
+            'message' => 'Check-in berhasil',
             'attendance' => $attendance,
             'debug_info' => [
-                'client_time' => $request->time ?? 'not provided',
-                'timezone_offset' => $request->timeZoneOffset ?? 'not provided',
+                'client_time' => $clientTime,
                 'server_time' => date('H:i:s'),
-                'stored_time' => $time,
+                'offset' => $timeZoneOffset,
             ]
         ], 200);
     }
 
-    //checkout
+    /**
+     * Handle user check-out
+     */
     public function checkout(Request $request)
     {
-        //validate lat and long
         $request->validate([
             'latitude' => 'required',
             'longitude' => 'required',
-            'time' => 'nullable',
-            'timeZoneOffset' => 'nullable',
+            'timeZoneOffset' => 'nullable|integer',
         ]);
 
-        // Determine the time to use
-        if ($request->has('time') && $request->has('timeZoneOffset')) {
-            // Use the client-provided time with time zone offset
-            $clientTime = $request->time;
-            $timeZoneOffset = (int)$request->timeZoneOffset;
+        $user = $request->user();
+        $date = date('Y-m-d');
+        $timeZoneOffset = (int)($request->timeZoneOffset ?? 0);
+        $clientNow = Carbon::now()->addHours($timeZoneOffset);
+        $clientTime = $clientNow->format('H:i:s');
 
-            // Create a Carbon instance from the client time
-            $timeFormat = strlen($clientTime) <= 5 ? 'H:i' : 'H:i:s';
-            $now = Carbon::createFromFormat($timeFormat, $clientTime);
+        Log::info("User {$user->id} check-out: Time {$clientTime}, Offset: {$timeZoneOffset}");
 
-            // Set the date to today
-            $now->setDate(date('Y'), date('m'), date('d'));
-
-            // Convert to UTC for storage
-            $now->subHours($timeZoneOffset);
-
-            $date = $now->format('Y-m-d');
-            $time = $now->format('H:i:s');
-
-            // Log for debugging
-            Log::info("Client check-out time: {$clientTime}, Offset: {$timeZoneOffset}, Stored time: {$time}");
-        } else {
-            // Fallback to server time
-            $date = date('Y-m-d');
-            $time = date('H:i:s');
-        }
-
-        // Check if today is a holiday
-        $isHoliday = Holiday::isHoliday($date);
-        if ($isHoliday) {
+        if (Holiday::isHoliday($date)) {
             return response([
-                'message' => 'Today is a holiday. No attendance required.',
+                'message' => 'Hari ini libur, tidak perlu absen.',
                 'is_holiday' => true
             ], 200);
         }
 
-        //get today attendance
-        $attendance = Attendance::where('user_id', $request->user()->id)
-            ->where('date', $date)
-            ->first();
+        $attendance = Attendance::where('user_id', $user->id)->where('date', $date)->first();
 
-        //check if attendance not found
         if (!$attendance) {
-            return response(['message' => 'Checkin first'], 400);
+            return response(['message' => 'Silakan check-in terlebih dahulu.'], 400);
         }
 
-        //save checkout
-        $attendance->time_out = $time;
-        $attendance->latlon_out = $request->latitude . ',' . $request->longitude;
-        $attendance->save();
+        $attendance->update([
+            'time_out' => $clientTime,
+            'latlon_out' => $request->latitude . ',' . $request->longitude,
+        ]);
 
         return response([
-            'message' => 'Checkout success',
+            'message' => 'Check-out berhasil',
             'attendance' => $attendance,
             'debug_info' => [
-                'client_time' => $request->time ?? 'not provided',
-                'timezone_offset' => $request->timeZoneOffset ?? 'not provided',
+                'client_time' => $clientTime,
                 'server_time' => date('H:i:s'),
-                'stored_time' => $time,
+                'offset' => $timeZoneOffset,
             ]
         ], 200);
     }
 
-    //check is checkedin
+    /**
+     * Check attendance status
+     */
     public function isCheckedin(Request $request)
     {
         $date = date('Y-m-d');
+        $user = $request->user();
 
-        // Check if today is a holiday
-        $isHoliday = Holiday::isHoliday($date);
-        if ($isHoliday) {
+        if (Holiday::isHoliday($date)) {
             $holiday = Holiday::whereDate('date', $date)->first();
             return response([
                 'checkedin' => false,
                 'checkedout' => false,
                 'is_holiday' => true,
-                'holiday_name' => $holiday ? $holiday->name : 'Holiday',
-                'holiday_type' => $holiday ? $holiday->type : 'unknown',
+                'holiday_name' => $holiday->name ?? 'Libur',
+                'holiday_type' => $holiday->type ?? 'unknown',
             ], 200);
         }
 
-        //get today attendance
-        $attendance = Attendance::where('user_id', $request->user()->id)
-            ->where('date', $date)
-            ->first();
-
-        $isCheckout = $attendance ? $attendance->time_out : false;
+        $attendance = Attendance::where('user_id', $user->id)->where('date', $date)->first();
 
         return response([
-            'checkedin' => $attendance ? true : false,
-            'checkedout' => $isCheckout ? true : false,
+            'checkedin' => (bool) $attendance,
+            'checkedout' => $attendance && $attendance->time_out ? true : false,
             'is_holiday' => false,
         ], 200);
     }
 
-    //index
+    /**
+     * Attendance index with optional date filter
+     */
     public function index(Request $request)
     {
+        $user = $request->user();
+        $timeZoneOffset = (int)($request->input('timeZoneOffset', 0));
         $date = $request->input('date');
-        $timeZoneOffset = $request->input('timeZoneOffset', 0); // Default to 0 if not provided
 
-        $currentUser = $request->user();
+        $attendances = Attendance::where('user_id', $user->id)
+            ->when($date, fn($query) => $query->where('date', $date))
+            ->get()
+            ->map(function ($item) use ($timeZoneOffset) {
+                $data = $item->toArray();
 
-        $query = Attendance::where('user_id', $currentUser->id);
+                if ($item->time_in) {
+                    $data['time_in'] = Carbon::createFromFormat('H:i:s', $item->time_in)->addHours($timeZoneOffset)->format('H:i:s');
+                }
 
-        if ($date) {
-            $query->where('date', $date);
-        }
+                if ($item->time_out) {
+                    $data['time_out'] = Carbon::createFromFormat('H:i:s', $item->time_out)->addHours($timeZoneOffset)->format('H:i:s');
+                }
 
-        $attendance = $query->get();
-
-        // Convert times to client's time zone for display
-        $formattedAttendance = $attendance->map(function ($item) use ($timeZoneOffset) {
-            // Clone the item to avoid modifying the original
-            $result = $item->toArray();
-
-            // Convert time_in to client's time zone if it exists
-            if (!empty($item->time_in)) {
-                $timeIn = Carbon::createFromFormat('H:i:s', $item->time_in);
-                $timeIn->addHours((int)$timeZoneOffset);
-                $result['time_in'] = $timeIn->format('H:i:s');
-            }
-
-            // Convert time_out to client's time zone if it exists
-            if (!empty($item->time_out)) {
-                $timeOut = Carbon::createFromFormat('H:i:s', $item->time_out);
-                $timeOut->addHours((int)$timeZoneOffset);
-                $result['time_out'] = $timeOut->format('H:i:s');
-            }
-
-            return $result;
-        });
+                return $data;
+            });
 
         return response([
-            'message' => 'Success',
-            'data' => $formattedAttendance,
+            'message' => 'Data absensi berhasil diambil',
+            'data' => $attendances,
             'debug_info' => [
                 'timezone_offset' => $timeZoneOffset,
                 'server_time' => date('H:i:s'),
@@ -233,37 +179,31 @@ class AttendanceControllerApi extends Controller
     }
 
     /**
-     * Get working days between two dates (excluding holidays)
+     * Get working days (excluding holidays)
      */
     public function getWorkingDays(Request $request)
     {
         $request->validate([
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'end_date'   => 'required|date|after_or_equal:start_date',
         ]);
 
-        $startDate = Carbon::parse($request->start_date);
-        $endDate = Carbon::parse($request->end_date);
+        $start = Carbon::parse($request->start_date);
+        $end = Carbon::parse($request->end_date);
+        $days = [];
 
-        $workingDays = [];
-        $currentDate = $startDate->copy();
-
-        while ($currentDate <= $endDate) {
-            // Check if the current date is a holiday
-            $isHoliday = Holiday::isHoliday($currentDate->format('Y-m-d'));
-
-            if (!$isHoliday) {
-                $workingDays[] = $currentDate->format('Y-m-d');
+        while ($start <= $end) {
+            if (!Holiday::isHoliday($start->format('Y-m-d'))) {
+                $days[] = $start->format('Y-m-d');
             }
-
-            $currentDate->addDay();
+            $start->addDay();
         }
 
         return response([
             'status' => 'Success',
-            'message' => 'Working days retrieved successfully',
-            'working_days' => $workingDays,
-            'count' => count($workingDays)
+            'message' => 'Hari kerja berhasil diambil',
+            'working_days' => $days,
+            'count' => count($days)
         ], 200);
     }
 }
