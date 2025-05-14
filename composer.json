@@ -9,6 +9,7 @@
         "barryvdh/laravel-dompdf": "^3.0",
         "endroid/qr-code": "^5.0",
         "kreait/laravel-firebase": "^5.8",
+        "laravel-notification-channels/fcm": "^4.5",
         "laravel/fortify": "^1.21",
         "laravel/framework": "^11.0",
         "laravel/sanctum": "^4.0",
