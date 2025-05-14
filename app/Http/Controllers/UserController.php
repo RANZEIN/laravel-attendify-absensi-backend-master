@@ -58,7 +58,8 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'position' => $request->position,
             'department' => $request->department,
-            'leave_balance' => 13, // Default leave balance adalah 13 hari
+            'receive_notification' => $request->receive_notification ? 1 : 0,
+            'leave_balance' => 13,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User created successfully');
