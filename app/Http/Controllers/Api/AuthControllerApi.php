@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Broadcast;
+use Illuminate\Support\Facades\Storage;
 
 class AuthControllerApi extends Controller
 {
-    //login
+    // Login
     public function login(Request $request)
     {
         $loginData = $request->validate([
@@ -19,22 +21,39 @@ class AuthControllerApi extends Controller
 
         $user = User::where('email', $loginData['email'])->first();
 
-        //check user exist
-        if (!$user) {
-            return response(['message' => 'Invalid credentials'], 401);
-        }
-
-        //check password
-        if (!Hash::check($loginData['password'], $user->password)) {
+        if (!$user || !Hash::check($loginData['password'], $user->password)) {
             return response(['message' => 'Invalid credentials'], 401);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response(['user' => $user, 'token' => $token], 200);
+        // Ambil broadcast untuk user tersebut
+        // $broadcasts = Broadcast::where(function ($query) use ($user) {
+        //         $query->whereHas('recipients', function ($q) use ($user) {
+        //             $q->where('user_id', $user->id);
+        //         });
+        //     })
+        //     ->orWhere('send_to_all', true)
+        //     ->with('sender')
+        //     ->orderBy('created_at', 'desc')
+        //     ->take(5)
+        //     ->get();
+
+        // foreach ($broadcasts as $broadcast) {
+        //     $recipient = $broadcast->recipients()->where('user_id', $user->id)->first();
+        //     $broadcast->is_read = $recipient && $recipient->pivot->read_at ? true : false;
+        //     $broadcast->read_at = $recipient->pivot->read_at ?? null;
+        //     $broadcast->file_url = $broadcast->file_path ? url(Storage::url($broadcast->file_path)) : null;
+        // }
+
+        return response([
+            'user' => $user,
+            'token' => $token,
+            // 'broadcasts' => $broadcasts
+        ], 200);
     }
 
-    //logout
+    // Logout
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -42,21 +61,22 @@ class AuthControllerApi extends Controller
         return response(['message' => 'Logged out'], 200);
     }
 
-    //update image profile & face_embedding
+    // Update image profile & face_embedding
     public function updateProfile(Request $request)
     {
         $request->validate([
-            // 'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'face_embedding' => 'required',
         ]);
 
         $user = $request->user();
-        // $image = $request->file('image');
+        $image = $request->file('image');
         $face_embedding = $request->face_embedding;
 
-        // //save image
-        // $image->storeAs('public/images', $image->hashName());
-        // $user->image_url = $image->hashName();
+        // // Simpan gambar (jika digunakan)
+        $image->storeAs('public/images', $image->hashName());
+        $user->image_url = $image->hashName();
+
         $user->face_embedding = $face_embedding;
         $user->save();
 
@@ -66,7 +86,7 @@ class AuthControllerApi extends Controller
         ], 200);
     }
 
-    //update fcm token
+    // Update FCM token
     public function updateFcmToken(Request $request)
     {
         $request->validate([
@@ -81,4 +101,6 @@ class AuthControllerApi extends Controller
             'message' => 'FCM token updated',
         ], 200);
     }
+
+
 }
