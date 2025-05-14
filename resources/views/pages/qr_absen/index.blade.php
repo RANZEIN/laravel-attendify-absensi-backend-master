@@ -86,7 +86,7 @@
                                                             <td>
                                                                 <div class="badge badge-success">
                                                                     <i class="fas fa-qrcode mr-1"></i>
-                                                                    {{ substr($qr->qr_checkin, 0, 12) }}...
+                                                                    {{ $qr->qr_checkin }}
                                                                 </div>
                                                             </td>
                                                             <td>
