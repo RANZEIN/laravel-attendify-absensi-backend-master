@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Holiday;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 class HolidayControllerApi extends Controller
 {
@@ -19,10 +19,9 @@ class HolidayControllerApi extends Controller
             'month' => 'required|integer|min:1|max:12',
         ]);
 
-        $year = $request->year;
-        $month = $request->month;
-
-        $holidays = Holiday::getMonthlyHolidays($year, $month);
+        $holidays = Holiday::whereYear('date', $request->year)
+            ->whereMonth('date', $request->month)
+            ->get();
 
         return response()->json([
             'status' => 'Success',
@@ -41,10 +40,8 @@ class HolidayControllerApi extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        $startDate = $request->start_date;
-        $endDate = $request->end_date;
-
-        $holidays = Holiday::inDateRange($startDate, $endDate)->get();
+        $holidays = Holiday::whereBetween('date', [$request->start_date, $request->end_date])
+            ->get();
 
         return response()->json([
             'status' => 'Success',
@@ -62,8 +59,7 @@ class HolidayControllerApi extends Controller
             'date' => 'required|date',
         ]);
 
-        $date = $request->date;
-        $holiday = Holiday::onDate($date)->first();
+        $holiday = Holiday::whereDate('date', $request->date)->first();
 
         return response()->json([
             'status' => 'Success',
@@ -74,7 +70,7 @@ class HolidayControllerApi extends Controller
     }
 
     /**
-     * Create a new holiday.
+     * Store a new holiday.
      */
     public function store(Request $request)
     {
@@ -92,7 +88,7 @@ class HolidayControllerApi extends Controller
             'type' => $request->type,
             'description' => $request->description,
             'is_recurring' => $request->is_recurring ?? false,
-            'created_by' => $request->user()->id,
+            'created_by' => $request->user()->id ?? null, // optional auth
         ]);
 
         return response()->json([
@@ -103,12 +99,10 @@ class HolidayControllerApi extends Controller
     }
 
     /**
-     * Update an existing holiday.
+     * Update existing holiday.
      */
     public function update(Request $request, $id)
     {
-        $holiday = Holiday::findOrFail($id);
-
         $request->validate([
             'name' => 'required|string|max:255',
             'date' => 'required|date',
@@ -116,6 +110,8 @@ class HolidayControllerApi extends Controller
             'description' => 'nullable|string',
             'is_recurring' => 'boolean',
         ]);
+
+        $holiday = Holiday::findOrFail($id);
 
         $holiday->update([
             'name' => $request->name,
@@ -147,7 +143,7 @@ class HolidayControllerApi extends Controller
     }
 
     /**
-     * Toggle a date between holiday and working day.
+     * Toggle holiday/working day.
      */
     public function toggleHoliday(Request $request)
     {
@@ -159,12 +155,13 @@ class HolidayControllerApi extends Controller
         $existingHoliday = Holiday::whereDate('date', $date)->first();
 
         if ($existingHoliday) {
-            // If it's already a holiday, delete it to make it a working day
             $existingHoliday->delete();
-            $message = 'Date marked as working day successfully.';
-            $isHoliday = false;
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'Date marked as working day successfully.',
+                'is_holiday' => false
+            ]);
         } else {
-            // If it's a working day, create a holiday
             $carbonDate = Carbon::parse($date);
             $isWeekend = $carbonDate->isWeekend();
 
@@ -174,17 +171,15 @@ class HolidayControllerApi extends Controller
                 'type' => $isWeekend ? 'weekend' : 'company',
                 'description' => $isWeekend ? 'Weekend holiday' : 'Company holiday',
                 'is_recurring' => false,
-                'created_by' => $request->user()->id,
+                'created_by' => $request->user()->id ?? null,
             ]);
 
-            $message = 'Date marked as holiday successfully.';
-            $isHoliday = true;
+            return response()->json([
+                'status' => 'Success',
+                'message' => 'Date marked as holiday successfully.',
+                'is_holiday' => true,
+                'holiday' => $holiday
+            ]);
         }
-
-        return response()->json([
-            'status' => 'Success',
-            'message' => $message,
-            'is_holiday' => $isHoliday
-        ]);
     }
 }
