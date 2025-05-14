@@ -4,15 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Broadcast;
 use App\Models\User;
+use App\Services\PushNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
-
 class BroadcastController extends Controller
 {
+    protected $pushNotificationService;
+
+    // public function __construct(PushNotificationService $pushNotificationService)
+    // {
+    //     $this->pushNotificationService = $pushNotificationService;
+    // }
 
     public function index()
     {
@@ -78,7 +84,7 @@ class BroadcastController extends Controller
 
         if ($request->send_now) {
             // Send push notifications to mobile app users
-            $this->sendPushNotifications($broadcast);
+            $this->pushNotificationService->sendBroadcastNotification($broadcast);
         }
 
         return redirect()->route('broadcasts.index')
@@ -103,6 +109,35 @@ class BroadcastController extends Controller
 
         return view('pages.broadcasts.edit', compact('broadcast', 'users', 'selectedRecipients'));
     }
+
+    public function publicBroadcasts()
+    {
+        $broadcasts = Broadcast::with('sender')
+            ->where('status', 'sent')
+            ->orderBy('sent_at', 'desc')
+            ->limit(10)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $broadcasts
+        ]);
+    }
+
+    // public function userController()
+    // {
+    //     $user = Auth::user();
+    //     $broadcasts = $user->receivedBroadcasts()
+    //         ->where('status', 'sent')
+    //         ->orderBy('sent_at', 'desc')
+    //         ->get();
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'data' => $broadcasts
+    //     ]);
+    // }
+
 
     public function update(Request $request, Broadcast $broadcast)
     {
@@ -171,7 +206,7 @@ class BroadcastController extends Controller
 
         if ($request->send_now) {
             // Send push notifications to mobile app users
-            $this->sendPushNotifications($broadcast);
+            $this->pushNotificationService->sendBroadcastNotification($broadcast);
         }
 
         return redirect()->route('broadcasts.index')
@@ -210,67 +245,9 @@ class BroadcastController extends Controller
         ]);
 
         // Send push notifications to mobile app users
-        $this->sendPushNotifications($broadcast);
+        $this->pushNotificationService->sendBroadcastNotification($broadcast);
 
         return redirect()->route('broadcasts.index')
             ->with('success', 'Broadcast sent successfully');
-    }
-
-    private function sendPushNotifications(Broadcast $broadcast)
-    {
-        // This is a placeholder for your actual push notification implementation
-        // You would typically use a service like Firebase Cloud Messaging (FCM)
-
-        // Example implementation with FCM would be:
-        // 1. Get all recipient tokens
-        // 2. Send batch notification
-
-        // For now, we'll just log that we would send notifications
-        Log::info('Push notifications would be sent for broadcast: ' . $broadcast->id);
-
-        // In a real implementation, you might use something like:
-        /*
-        $recipients = $broadcast->recipients;
-        $tokens = [];
-
-        foreach ($recipients as $recipient) {
-            // Assuming you store FCM tokens in a user_devices table
-            $devices = $recipient->devices;
-            foreach ($devices as $device) {
-                $tokens[] = $device->fcm_token;
-            }
-        }
-
-        if (count($tokens) > 0) {
-            $fcmData = [
-                'registration_ids' => $tokens,
-                'notification' => [
-                    'title' => $broadcast->title,
-                    'body' => $broadcast->message,
-                ],
-                'data' => [
-                    'broadcast_id' => $broadcast->id,
-                    'type' => 'broadcast'
-                ]
-            ];
-
-            $headers = [
-                'Authorization: key=' . config('services.fcm.key'),
-                'Content-Type: application/json'
-            ];
-
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmData));
-            $result = curl_exec($ch);
-            curl_close($ch);
-
-            \Log::info('FCM Response: ' . $result);
-        }
-        */
     }
 }
