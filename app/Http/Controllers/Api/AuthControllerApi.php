@@ -65,26 +65,26 @@ class AuthControllerApi extends Controller
     public function updateProfile(Request $request)
 {
     $request->validate([
-        'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         'face_embedding' => 'required',
-        'phone' => 'sometimes|string',
     ]);
 
     $user = $request->user();
-    $image = $request->file('image');
     $face_embedding = $request->face_embedding;
-    $phone = $request->phone;
-    $user->phone = $phone;
 
-    // Tentukan folder tujuan di public/storage/users
-    // $destinationPath = public_path('storage/users');
+    // Jika ada file image dikirim
+    if ($request->hasFile('image')) {
+        $image = $request->file('image');
 
-    // Pindahkan file ke folder tersebut
-    $filename = $image->storeAs('public/users', $image->hashName());
-    // $image->move($destinationPath, $filename);
+        // Simpan file ke storage/app/public/users
+        $filename = $image->storeAs('public/users', $image->hashName());
 
-    // Simpan path relatif ke database
-   $user->image_url = $image->hashName();
+        // Simpan nama file ke database
+        $user->image_url = $image->hashName();
+
+        // Optional: pindahkan ke public path jika memang dibutuhkan (jarang perlu)
+        $destinationPath = public_path('storage/users');
+        $image->move($destinationPath, $filename);
+    }
 
     $user->face_embedding = $face_embedding;
     $user->save();
