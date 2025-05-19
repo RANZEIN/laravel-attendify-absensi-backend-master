@@ -14,6 +14,6 @@ class AttendanceSeeder extends Seeder
     public function run(): void
     {
         // data dummy for attendance auto generate
-        Attendance::factory(20)->create();
+        Attendance::factory(100)->create();
     }
 }

@@ -63,28 +63,37 @@ class AuthControllerApi extends Controller
 
     // Update image profile & face_embedding
     public function updateProfile(Request $request)
-    {
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'face_embedding' => 'required',
-        ]);
+{
+    $request->validate([
+        'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        'face_embedding' => 'required',
+        'phone' => 'sometimes|string',
+    ]);
 
-        $user = $request->user();
-        $image = $request->file('image');
-        $face_embedding = $request->face_embedding;
+    $user = $request->user();
+    $image = $request->file('image');
+    $face_embedding = $request->face_embedding;
+    $phone = $request->phone;
+    $user->phone = $phone;
 
-        // // Simpan gambar (jika digunakan)
-        $image->storeAs('public/images', $image->hashName());
-        $user->image_url = $image->hashName();
+    // Tentukan folder tujuan di public/storage/users
+    // $destinationPath = public_path('storage/users');
 
-        $user->face_embedding = $face_embedding;
-        $user->save();
+    // Pindahkan file ke folder tersebut
+    $filename = $image->storeAs('public/users', $image->hashName());
+    // $image->move($destinationPath, $filename);
 
-        return response([
-            'message' => 'Profile updated',
-            'user' => $user,
-        ], 200);
-    }
+    // Simpan path relatif ke database
+   $user->image_url = $image->hashName();
+
+    $user->face_embedding = $face_embedding;
+    $user->save();
+
+    return response([
+        'message' => 'Profile updated',
+        'user' => $user,
+    ], 200);
+}
 
     // Update FCM token
     public function updateFcmToken(Request $request)

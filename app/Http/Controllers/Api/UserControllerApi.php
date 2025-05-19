@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class UserControllerApi extends Controller
 {
@@ -29,7 +30,7 @@ class UserControllerApi extends Controller
     }
 
     // Get single user by ID
-    public function getUserId($id)
+    public function show($id)
     {
         $user = User::find($id);
 
@@ -155,7 +156,6 @@ class UserControllerApi extends Controller
         ], 200);
     }
 
-
     // Update profile with image upload (optional)
     public function updateProfile(Request $request)
     {
@@ -172,13 +172,12 @@ class UserControllerApi extends Controller
             $user->name = $request->name;
             $user->email = $request->email;
             $user->phone = $request->phone;
-            $user->save();
 
             if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $image_name = time() . '.' . $image->getClientOriginalExtension();
-                $filePath = $image->storeAs('images/users', $image_name, 'public');
-                $user->image_url = $filePath;
+                $file = $request->file('image');
+                $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('storage/users'), $filename);
+                $user->image_url = 'users/' . $filename;
             }
 
             $user->save();
@@ -194,8 +193,5 @@ class UserControllerApi extends Controller
                 'message' => $th->getMessage(),
             ], 500);
         }
-
-
     }
-
 }

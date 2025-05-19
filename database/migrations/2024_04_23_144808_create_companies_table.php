@@ -27,6 +27,8 @@ return new class extends Migration
             $table->string('time_in');
             //time_out (format: 17:00)
             $table->string('time_out');
+            //phone
+            $table->string('phone');
 
             $table->timestamps();
         });

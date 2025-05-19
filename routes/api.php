@@ -35,7 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // User
     Route::get('auth/users', [UserControllerApi::class, 'index']);
-    Route::get('auth/users/{id}', [UserControllerApi::class, 'show']);
+    Route::get('auth/users/{id}', [UserControllerApi::class, 'getUserId']);
     Route::post('auth/users', [UserControllerApi::class, 'store']);
     Route::put('auth/users/{id}', [UserControllerApi::class, 'update']);
     Route::delete('auth/users/{id}', [UserControllerApi::class, 'destroy']);
