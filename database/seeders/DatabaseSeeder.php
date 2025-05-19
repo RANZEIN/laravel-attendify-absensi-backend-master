@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'ranzdhika@gmail.com',
+            'name' => 'ranzdhika',
             'email' => 'ranzdhika@gmail.com',
             'password' => Hash::make('@WHF487pp31'),
         ]);
@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'PT. Attendify',
             'email' => 'ranzdhika@gmail.com',
             'address' => 'Jl. Cibiru atas Gg. Reformasi No.6, Bandung, Jawabarat',
+            'phone' => '082124847648',
             'latitude' => '-7.747033',
             'longitude' => '110.355398',
             'radius_km' => '0.5',
