@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('file_type')->nullable();
             $table->foreignId('sender_id')->constrained('users');
             $table->enum('status', ['draft', 'sent'])->default('draft');
+            $table->enum('priority', ['low', 'medium', 'high'])->default('medium');
             $table->timestamp('sent_at')->nullable();
             $table->boolean('send_to_all')->default(false);
             $table->timestamps();
