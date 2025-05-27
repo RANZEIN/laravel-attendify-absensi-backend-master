@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\QrAbsenControllerApi;
 use App\Http\Controllers\Api\TimeOffControllerApi;
 use App\Http\Controllers\Api\HolidayControllerApi;
 use App\Http\Controllers\Api\BroadcastControllerApi;
+use App\Http\Controllers\API\TaskControllerApi;
 
 // Auth Routes
 Route::post('auth/login', [AuthControllerApi::class, 'login']);
@@ -35,7 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // User
     Route::get('auth/users', [UserControllerApi::class, 'index']);
-    Route::get('auth/users/{id}', [UserControllerApi::class, 'getUserId']);
+    Route::get('auth/users/{id}', [UserControllerApi::class, 'show']);
     Route::post('auth/users', [UserControllerApi::class, 'store']);
     Route::put('auth/users/{id}', [UserControllerApi::class, 'update']);
     Route::delete('auth/users/{id}', [UserControllerApi::class, 'destroy']);
@@ -74,7 +75,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('auth/broadcasts', [BroadcastControllerApi::class, 'getBroadcasts']);
     Route::get('auth/broadcasts/{id}', [BroadcastControllerApi::class, 'getBroadcastDetail']);
     Route::post('auth/broadcasts/mark-as-read', [BroadcastControllerApi::class, 'markAsRead']);
+    Route::post('auth/broadcasts/mark-all-as-read', [BroadcastControllerApi::class, 'markAllAsRead']);
     Route::post('auth/broadcasts/register-device-token', [BroadcastControllerApi::class, 'registerDeviceToken']);
     Route::get('auth/broadcasts/unread-count', [BroadcastControllerApi::class, 'getUnreadCount']);
     Route::get('auth/broadcasts/download/{id}', [BroadcastControllerApi::class, 'downloadFile']);
+    Route::get('auth/broadcasts/priority/{priority}', [BroadcastControllerApi::class, 'getBroadcastsByPriority']);
+    route::post('auth/broadcasts/create', [BroadcastControllerApi::class, 'createBroadcast']);
+
+    // Task
+    Route::get('auth/tasks', [TaskControllerApi::class, 'index']);
+    Route::post('auth/tasks', [TaskControllerApi::class, 'store']);
+    Route::get('auth/tasks/summary', [TaskControllerApi::class, 'getSummary']);
+    Route::get('auth/tasks/today', [TaskControllerApi::class, 'getTodayTasks']);
+    Route::get('auth/tasks/status/{status}', [TaskControllerApi::class, 'getTasksByStatus']);
+    Route::get('auth/tasks/{id}', [TaskControllerApi::class, 'show']);
+    Route::put('auth/tasks/{id}', [TaskControllerApi::class, 'update']);
+    Route::patch('auth/tasks/{id}/status', [TaskControllerApi::class, 'updateStatus']);
+    Route::delete('auth/tasks/{id}', [TaskControllerApi::class, 'destroy']);
 });
